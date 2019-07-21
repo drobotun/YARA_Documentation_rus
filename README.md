@@ -7,3 +7,5 @@ YARA - это инструмент, направленный (но не огра
 Страница проекта YARA: https://github.com/VirusTotal/yara и http://virustotal.github.io/yara/
 
 Страница проекта YARA Gui (YARA с оконным интерфейсом): https://github.com/sigint9/yaragui
+
+YARA Editor (IDE для YARA): https://www.adlice.com/download/yaraeditor/
