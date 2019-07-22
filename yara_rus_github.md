@@ -24,6 +24,7 @@
 # Глава 1. Начало работы
 
 </a>
+
 ***
 YARA - это мультиплатформенная программа, работающая в операционных системах Windows, Linux и Mac OS X. Вы можете найти последнюю версию YARA по адресу [https://github.com/VirusTotal/yara/releases](https://github.com/VirusTotal/yara/releases).
 
