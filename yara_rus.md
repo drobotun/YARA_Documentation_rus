@@ -12,7 +12,7 @@
 ***
 <font size="5">**Перевод: Дроботун Евгений (drobotun@xakep.ru)**</font>
 
-<font size="4">**20 июля 2019**</font>
+<font size="4">**22 июля 2019**</font>
 
 # Содержание
 
