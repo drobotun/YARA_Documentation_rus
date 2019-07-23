@@ -3659,12 +3659,14 @@ yara.**set_config(...)**
 
 Для получения подробной информации об ошибке вы должны установить функцию обратного вызова, используя `yr_compiler_set_callback()` перед вызовом любой из функций компиляции. Функция обратного вызова имеет следующий прототип:
 
-	void callback_function(
-		int error_level,
-		const char* file_name,
-		int line_number,
-		const char* message,
-		void* user_data)
+```C
+void callback_function(
+	int error_level,
+	const char* file_name,
+	int line_number,
+	const char* message,
+	void* user_data)
+```
 
 Изменения в версии 3.3.0.
 
