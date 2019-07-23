@@ -2479,33 +2479,35 @@ Example: `dotnet.modulerefs[0] == “kernel32”`
 
 В каталоге `libyara/modules` вы найдете файл `demo.c`, который мы будем использовать в качестве отправной точки. Файл выглядит следующим образом:
 
-	#include <yara/modules.h>
-	#define MODULE_NAME demo
-	begin_declarations;
+```C
+#include <yara/modules.h>
+#define MODULE_NAME demo
+begin_declarations;
 
-		declare_string("greeting");
+	declare_string("greeting");
 
-	end_declarations;
+end_declarations;
 
-	int module_initialize(YR_MODULE* module)
-	{
-		return ERROR_SUCCESS;
-	}
+int module_initialize(YR_MODULE* module)
+{
+	return ERROR_SUCCESS;
+}
 
-	int module_finalize(YR_MODULE* module)
-	{
-		return ERROR_SUCCESS;
+int module_finalize(YR_MODULE* module)
+{
+	return ERROR_SUCCESS;
 	
-	int module_load(YR_SCAN_CONTEXT* context, YR_OBJECT* module_object, void* module_data, size_t module_data_size)
-	{
-		set_string("Hello World!", module_object, "greeting");
-		return ERROR_SUCCESS;
-	}
-	int module_unload(YR_OBJECT* module_object)
-	{
-		return ERROR_SUCCESS;
-	}
-	#undef MODULE_NAME
+int module_load(YR_SCAN_CONTEXT* context, YR_OBJECT* module_object, void* module_data, size_t module_data_size)
+{
+	set_string("Hello World!", module_object, "greeting");
+	return ERROR_SUCCESS;
+}
+int module_unload(YR_OBJECT* module_object)
+{
+	return ERROR_SUCCESS;
+}
+#undef MODULE_NAME
+```
 
 Начнем разбирать исходный код, чтобы вы могли понять каждую деталь. Первая строка в коде:
 
