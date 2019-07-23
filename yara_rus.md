@@ -3476,13 +3476,15 @@ YR_OBJECT* **get_object**(YR_OBJECT* object, const char* field, ...)
 
 Например:
 
-	import yara
+```python
+import yara
 
-	def mycallback(data):
-		print data
-		return yara.CALLBACK_CONTINUE
+def mycallback(data):
+	print data
+	return yara.CALLBACK_CONTINUE
 
-	matches = rules.match('/foo/bar/my_file', callback=mycallback, which_callbacks=yara.CALLBACK_MATCHES)
+matches = rules.match('/foo/bar/my_file', callback=mycallback, which_callbacks=yara.CALLBACK_MATCHES)
+```
 
 Переданный словарь будет примерно таким:
 
