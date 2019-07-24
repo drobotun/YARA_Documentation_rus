@@ -1328,7 +1328,7 @@ rule is_dll
 - **MACHINE_THUMB**
 - **MACHINE_WCEMIPSV2**
 
-Пример: `pe.machine == pe.MACHINE_AMD64`
+Пример: ```yara pe.machine == pe.MACHINE_AMD64```
 ***
 **checksum**
 
