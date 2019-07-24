@@ -3130,28 +3130,32 @@ mymodule.another_structure.baz
 
 Точно так же, как вы объявляете отдельные строки, целые числа, числа с плавающей запятой или структуры, вы можете объявлять массивы из них:
 
-	begin_declarations;
+```C
+begin_declarations;
 
-		declare_integer_array("foo");
-		declare_string_array("bar");
-		declare_float_array("baz");
+	declare_integer_array("foo");
+	declare_string_array("bar");
+	declare_float_array("baz");
 
-		begin_struct_array("struct_array");
+	begin_struct_array("struct_array");
 
-			declare_integer("foo");
-			declare_string("bar");
+		declare_integer("foo");
+		declare_string("bar");
 
-		end_struct_array("struct_array");
+	end_struct_array("struct_array");
 
-	end_declarations;
+end_declarations;
+```
 
 К отдельным значениям в массиве обращаются, как и в большинстве языков программирования:
 
-	foo[0]
-	bar[1]
-	baz[3]
-	struct_array[4].foo
-	struct_array[1].bar
+```C
+foo[0]
+bar[1]
+baz[3]
+struct_array[4].foo
+struct_array[1].bar
+```
 
 Массивы начинаются с нуля и не имеют фиксированного размера, они будут увеличиваться по мере необходимости, когда вы начнете инициализировать его значения.
 
@@ -3165,28 +3169,32 @@ mymodule.another_structure.baz
 
 Вы также можете объявить словари целых чисел, чисел с плавающей запятой, строк или структур:
 
-	begin_declarations;
+```C
+begin_declarations;
 
-		declare_integer_dictionary("foo");
-		declare_string_dictionary("bar");
-		declare_float_dictionary("baz")
+	declare_integer_dictionary("foo");
+	declare_string_dictionary("bar");
+	declare_float_dictionary("baz")
 		
-		begin_struct_dictionary("struct_dict");
+	begin_struct_dictionary("struct_dict");
 
-			declare_integer("foo");
-			declare_string("bar");
+		declare_integer("foo");
+		declare_string("bar");
 
-		end_struct_dictionary("struct_dict");
+	end_struct_dictionary("struct_dict");
 
-	end_declarations;
+end_declarations;
+```
 
 Отдельные значения в словаре доступны с помощью строкового ключа:
 
-	foo["somekey"]
-	bar["anotherkey"]
-	baz["yetanotherkey"]
-	struct_dict["k1"].foo
-	struct_dict["k1"].bar
+```C
+foo["somekey"]
+bar["anotherkey"]
+baz["yetanotherkey"]
+struct_dict["k1"].foo
+struct_dict["k1"].bar
+```
 
 <a name="ch_4.2.5">
 
@@ -3196,7 +3204,9 @@ mymodule.another_structure.baz
 
 Одной из наиболее мощных возможностей модулей YARA является возможность объявления функций, которые впоследствии могут быть вызваны из ваших правил. Функции должны появляться в разделе объявлений следующим образом:
 
-	declare_function(<function name>, <argument types>, <return tuype>, <C function>);
+```C
+declare_function(<function name>, <argument types>, <return tuype>, <C function>);
+```
 
 `<function name>` - это имя, которое будет использоваться в ваших правилах YARA для вызова функции.
 
@@ -3208,43 +3218,49 @@ mymodule.another_structure.baz
 
 Ниже приведен полный пример:
 
-	define_function(isum)
-	{
-		int64_t a = integer_argument(1);
-		int64_t b = integer_argument(2);
+```C
+define_function(isum)
+{
+	int64_t a = integer_argument(1);
+	int64_t b = integer_argument(2);
 
-		return_integer(a + b);
-	}
+	return_integer(a + b);
+}
 
-	define_function(fsum)
-	{
-		double a = float_argument(1);
-		double b = float_argument(2);
+define_function(fsum)
+{
+	double a = float_argument(1);
+	double b = float_argument(2);
 
-		return_integer(a + b);
-	}
+	return_integer(a + b);
+}
 
-	begin_declarations;
+begin_declarations;
 
-		declare_function("sum", "ii", "i", sum);
+	declare_function("sum", "ii", "i", sum);
 
-	end_declarations;
+end_declarations;
+```
 
 Как вы можете видеть в приведенном выше примере, ваш код функции должен быть определен перед разделом объявлений, например:
 
-	define_function(<function identifier>)
-	{
-		...ваш код
-	}
+```C
+define_function(<function identifier>)
+{
+	...ваш код
+}
+C
 
 Функции могут быть перегружены, как в C++ и других языках программирования. Вы можете объявить две функции с одинаковыми именами, если они различаются по типу или количеству аргументов. Один пример перегруженных функций можно найти в модуле `Hash`, он имеет две функции для вычисления MD5-хэшей, одна получает в качестве аргументов смещение и длину в файле, а другая получает строку:
 
-	begin_declarations;
+```C
+begin_declarations;
 
-		declare_function("md5", "ii", "s", data_md5);
-		declare_function("md5", "s", "s", string_md5);
+	declare_function("md5", "ii", "s", data_md5);
+	declare_function("md5", "s", "s", string_md5);
 
-	end_declarations;
+end_declarations;
+```
 
 Подробнее обсудим реализацию функций в разделе 4.5 «Подробнее о функциях».
 
@@ -3258,15 +3274,17 @@ mymodule.another_structure.baz
 
 Эти функции дают модулю возможность инициализировать любую глобальную структуру данных, которая ему может понадобиться, но в большинстве случаев это просто пустые функции:
 
-	int module_initialize(YR_MODULE* module)
-	{
-		return ERROR_SUCCESS;
-	}
+```C
+int module_initialize(YR_MODULE* module)
+{
+	return ERROR_SUCCESS;
+}
 
-	int module_finalize(YR_MODULE* module)
-	{
-		return ERROR_SUCCESS;
-	}
+int module_finalize(YR_MODULE* module)
+{
+	return ERROR_SUCCESS;
+}
+```
 
 Любое возвращаемое значение, отличное от `ERROR_SUCCESS`, прервет выполнение YARA.
 
@@ -3280,25 +3298,29 @@ mymodule.another_structure.baz
 
 Функция `module_load` имеет следующий прототип:
 
-	int module_load(
-		YR_SCAN_CONTEXT* context,
-		YR_OBJECT* module_object,
-		void* module_data,
-		size_t module_data_size)
+```C
+int module_load(
+	YR_SCAN_CONTEXT* context,
+	YR_OBJECT* module_object,
+	void* module_data,
+	size_t module_data_size)
+```
 
 Аргумент `context` содержит информацию относительно текущего сканирования, включая сканируемые данные. Аргумент `module_object` является указателем на структуру `YR_OBJECT`, связанную с модулем. Каждая структура, переменная или функция, объявленная в модуле YARA, представлена структурой `YR_OBJECT`. Эти структуры образуют дерево, корнем которого является структура модуля `YR_OBJECT`. Например, если у вас есть следующие объявления в модуле с именем `mymodule`:
 
-	begin_declarations;
+```C
+begin_declarations;
 
-		declare_integer("foo");
+	declare_integer("foo");
 
-			begin_struct("bar");
+		begin_struct("bar");
 
-				declare_string("baz");
+			declare_string("baz");
 
-			end_struct("bar");
+		end_struct("bar");
 
-	end_declarations;
+end_declarations;
+```
 
 Тогда дерево будет выглядеть так:
 
@@ -3326,18 +3348,20 @@ mymodule.another_structure.baz
 
 Большинству модулей YARA необходим доступ к сканируемому файлу или памяти процесса, чтобы извлечь из него информацию. Сканируемые данные отправляются в модуль в структуре `YR_SCAN_CONTEXT`, передаваемой в функцию `mdule_load`. Данные иногда разбиваются на блоки, поэтому вашему модулю необходимо выполнять итерации по блокам с помощью макроса `foreach_memory_block`:
 
-	int module_load(
-		R_SCAN_CONTEXT* context,
-		YR_OBJECT* module_object,
-		void* module_data,
-		size_t module_data_size)
+```C
+int module_load(
+	R_SCAN_CONTEXT* context,
+	YR_OBJECT* module_object,
+	void* module_data,
+	size_t module_data_size)
+{
+	YR_MEMORY_BLOCK* block;
+	foreach_memory_block(context, block)
 	{
-		YR_MEMORY_BLOCK* block;
-		foreach_memory_block(context, block)
-		{
-			..делаем какие-либо операции с текущим блоком памяти
-		}
+		..делаем какие-либо операции с текущим блоком памяти
 	}
+}
+```
 
 Каждый блок памяти представлен структурой `YR_MEMORY_BLOCK` со следующими атрибутами:
 
@@ -3359,38 +3383,42 @@ size_t **base**
 
 Однако в некоторых случаях перебирать блоки не требуется. Если ваш модуль просто анализирует заголовок какого-либо формата файла, вы можете смело предполагать, что весь заголовок содержится в первом блоке (тем не менее, добавьте некоторые проверки в ваш код). В этих случаях вы можете использовать макрос `first_memory_block`:
 
-	int module_load(
-		YR_SCAN_CONTEXT* context,
-		YR_OBJECT* module_object,
-		void* module_data,
-		size_t module_data_size)
+```C
+int module_load(
+	YR_SCAN_CONTEXT* context,
+	YR_OBJECT* module_object,
+	void* module_data,
+	size_t module_data_size)
+{
+	YR_MEMORY_BLOCK* block;
+	const uint8_t* block_data;
+
+	block = first_memory_block(context);
+	block_data = block->fetch_data(block)
+
+	if (block_data != NULL)
 	{
-		YR_MEMORY_BLOCK* block;
-		const uint8_t* block_data;
-
-		block = first_memory_block(context);
-		block_data = block->fetch_data(block)
-
-		if (block_data != NULL)
-		{
-			..делаем какие-либо операции с текущим блоком памяти
-		}
+		..делаем какие-либо операции с текущим блоком памяти
 	}
+}
+```
 
 В предыдущем примере вы также можете увидеть, как использовать функцию `fetch_data`. Эта функция, которая является членом структуры `YR_MEMORY_BLOCK`, получает указатель на тот же блок и возвращает указатель на данные блока. Вашему модулю не принадлежит память, на которую указывает этот указатель, освобождение этой памяти не является вашей ответственностью. Однако имейте в виду, что указатель действителен только до тех пор, пока вы не запросите следующий блок памяти. Пока вы используете указатель в пределах `foreach_memory_block`, вы в безопасности. Также учтите, что `fetch_data` может возвращать указатель `NULL`, ваш код должен быть подготовлен для этого случая.
 
-	const uint8_t* block_data;
+```C
+const uint8_t* block_data;
 
-	foreach_memory_block(context, block)
+foreach_memory_block(context, block)
+{
+	block_data = block->fetch_data(block);
+
+	if (block_data != NULL)
 	{
-		block_data = block->fetch_data(block);
-
-		if (block_data != NULL)
-		{
-			// использование block_data здесь безопасно.
-		}
+		// использование block_data здесь безопасно.
 	}
-	// память, на которую указывает block_data, здесь уже может быть освобождена.
+}
+// память, на которую указывает block_data, здесь уже может быть освобождена.
+```
 
 <a name="ch_4.4.2">
 
@@ -3410,70 +3438,86 @@ void **set_string**(const char* value, YR_OBJECT* object, const char* field, ...
 
 Например, предполагая, что объект указывает на структуру `YR_OBJECT`, соответствующую некоторой целочисленной переменной, мы можем установить значение для этой целочисленной переменной с помощью:
 
-	set_integer(<value>, object, NULL);
+```C
+set_integer(<value>, object, NULL);
+```
 
 Дескриптор поля используется, когда вы хотите присвоить значение некоторому потомку объекта. Например, рассмотрим следующие объявления:
 
-	begin_declarations;
+```C
+begin_declarations;
 
-		begin_struct("foo");
+	begin_struct("foo");
 
-			declare_string("bar");
+		declare_string("bar");
 
-			begin_struct("baz");
+		begin_struct("baz");
 
-				declare_integer("qux");
+			declare_integer("qux");
 
-			end_struct("baz");
+		end_struct("baz");
 
-		end_struct("foo");
+	end_struct("foo");
 
-	end_declarations;
+end_declarations;
+```
 
 Если объект указывает на `YR_OBJECT`, связанный со структурой `foo`, вы можете установить значение для строки `bar` следующим образом:
 
-	set_string(<value>, object, "bar");
+```C	
+set_string(<value>, object, "bar");
+```
 
 И значение для `qux` таким образом:
 
-	set_integer(<value>, object, "baz.qux");
+```C
+set_integer(<value>, object, "baz.qux");
+```
 
 Вы помните, что аргумент `module_object` для `module_load` был указателем на `YR_OBJECT`? Вы помните, что этот `YR_OBJECT` является структурой, как и `bar`? Исходя из этого, вы также можете установить значения для `bar` и `qux` следующим образом:
 
-	set_string(<value>, module_object, "foo.bar");
-	set_integer(<value>, module_object, "foo.baz.qux");
+```C
+set_string(<value>, module_object, "foo.bar");
+set_integer(<value>, module_object, "foo.baz.qux");
+```
 
 Но что происходит с массивами? Каким образом можно установить значения для элементов массива? Если у вас есть следующее объявление:
 
-	begin_declarations;
+```C
+begin_declarations;
 
-		declare_integer_array("foo");
+	declare_integer_array("foo");
 
-		begin_struct_array("bar")
+	begin_struct_array("bar")
 
-			declare_string("baz");
-			declare_integer_array("qux");
+		declare_string("baz");
+		declare_integer_array("qux");
 
-		end_struct_array("bar");
+	end_struct_array("bar");
 
-	end_declarations;
+end_declarations;
+```
 
 Тогда следующие представления операторов `set_integer` и `set_struing` являются валидными:
 
-	set_integer(<value>, module, "foo[0]");
-	set_integer(<value>, module, "foo[%i]", 2);
-	set_string(<value>, module, "bar[%i].baz", 5);
-	set_string(<value>, module, "bar[0].qux[0]");
-	set_string(<value>, module, "bar[0].qux[%i]", 0);
-	set_string(<value>, module, "bar[%i].qux[%i]", 100, 200);
+```C
+set_integer(<value>, module, "foo[0]");
+set_integer(<value>, module, "foo[%i]", 2);
+set_string(<value>, module, "bar[%i].baz", 5);
+set_string(<value>, module, "bar[0].qux[0]");
+set_string(<value>, module, "bar[0].qux[%i]", 0);
+set_string(<value>, module, "bar[%i].qux[%i]", 100, 200);
+```
 
 Спецификатор формата `%i` в дескрипторе поля заменяются дополнительными целочисленными аргументами, передаваемыми функции. Это работает так же, как `printf` в программах на C, но единственными допустимыми спецификаторами формата являются `%i` и `%s` для целочисленных и строковых аргументов соответственно.
 
 Спецификатор формата `%s` используется для назначения значений определенному ключу в словаре:
 
-	set_integer(<value>, module, "foo[\"key\"]");
-	set_integer(<value>, module, "foo[%s]", "key");
-	set_string(<value>, module, "bar[%s].baz", "another_key");
+```C
+set_integer(<value>, module, "foo[\"key\"]");
+set_integer(<value>, module, "foo[%s]", "key");
+set_string(<value>, module, "bar[%s].baz", "another_key");
+```
 
 Если явно не присвоить значение объявленной переменной, массиву или элементу справочника, то они останутся в неопределенном состоянии. Это не проблема, и даже полезно во многих случаях. Например, если модуль предназначен для анализа файлов определенного формата, а получает для анализа файлы другого формата, можно оставить все переменные неопределенными, а не присваивать им фиктивные значения, которые не имеют смысла. YARA будет обрабатывать неопределенные значения в условиях правила, как описано в Главе 3 ["Использовании модулей"](#ch_3).
 
@@ -3491,8 +3535,10 @@ YR_OBJECT* **get_object**(YR_OBJECT* object, const char* field, ...)
 
 Эквивалентны ли следующие две строки? Почему?
 
-	set_integer(1, get_object(module_object, "foo.bar"), NULL);
-	set_integer(1, module_object, "foo.bar");
+```C
+set_integer(1, get_object(module_object, "foo.bar"), NULL);
+set_integer(1, module_object, "foo.bar");
+```
 
 <a name="ch_4.4.3">
 
@@ -3506,32 +3552,37 @@ YR_OBJECT* **get_object**(YR_OBJECT* object, const char* field, ...)
 
 Каждый `YR_OBJECT` имеет поле `void* data`, которое может быть безопасно использовано вашим кодом для хранения указателя на любые данные, которые вам могут понадобиться. Типичный шаблон использует поле `data` `YR_OBJECT` модуля, как в следующем примере:
 
-	typedef struct _MY_DATA
-	{
-		int some_integer;
+```C
+typedef struct _MY_DATA
+{
+	int some_integer;
 
-	} MY_DATA;
+} MY_DATA;
 
-	int module_load(
-		YR_SCAN_CONTEXT* context,
-		YR_OBJECT* module_object,
-		void* module_data,
-		size_t module_data_size)
-	{
-		module->data = yr_malloc(sizeof(MY_DATA));
-		((MY_DATA*) module_object->data)->some_integer = 0;
+int module_load(
+	YR_SCAN_CONTEXT* context,
+	YR_OBJECT* module_object,
+	void* module_data,
+	size_t module_data_size)
+{
+	module->data = yr_malloc(sizeof(MY_DATA));
+	((MY_DATA*) module_object->data)->some_integer = 0;
 
-		return ERROR_SUCCESS;
-	}
+	return ERROR_SUCCESS;
+}
+```
 
 Не забудьте освободить выделенную память в функции `module_unload`:
 
-	int module_unload(YR_OBJECT* module_object)
-	{
-		yr_free(module_object->data);
+```C
+int module_unload(YR_OBJECT* module_object)
+{
+	yr_free(module_object->data);
 
-		eturn ERROR_SUCCESS;
-	}
+	return ERROR_SUCCESS;
+}
+```
+
 ***
 **Предупреждение** Не используйте глобальные переменные для хранения данных. Функции в модуле могут быть вызваны из разных потоков одновременно, и может произойти повреждение данных или неправильное поведение.
 ***
@@ -3556,11 +3607,13 @@ YR_OBJECT* **get_object**(YR_OBJECT* object, const char* field, ...)
 
 Вот несколько примеров:
 
-	nt64_t arg_1 = integer_argument(1);
-	RE* arg_2 = regexp_argument(2);
-	char* arg_3 = string_argument(3);
-	SIZED_STRING* arg_4 = sized_string_argument(4);
-	double arg_5 = float_argument(1);
+```C
+nt64_t arg_1 = integer_argument(1);
+RE* arg_2 = regexp_argument(2);
+char* arg_3 = string_argument(3);
+SIZED_STRING* arg_4 = sized_string_argument(4);
+double arg_5 = float_argument(1);
+```
 
 Тип C для целочисленных аргументов - `int64_t`, для аргументов с плавающей запятой - `double`, для регулярных выражений - `RE*`, для NULL-завершенных строк - `char*`, а для строк, возможно содержащих NULL-символы, - `SIZED_STRING*`. Структуры `SIZED_STRING` имеют следующие атрибуты:
 
@@ -3590,33 +3643,35 @@ YR_OBJECT* **get_object**(YR_OBJECT* object, const char* field, ...)
 
 При написании функции нам иногда требуется доступ к значениям, ранее назначенным переменным модуля, или дополнительным данным, хранящимся в поле `data` структур `YR_OBJECT`, как обсуждалось ранее в п. [4.4.3](#ch_4.4.3), для последующего использования. Но для этого нам нужен способ, позволяющий получить доступ к соответствующей структуре `YR_OBJECT`. Для этого есть две функции: `module ()` и `parent ()`. Функция `module ()` возвращает указатель на `YR_OBJECT` верхнего уровня, соответствующий модулю, который передается в функцию `module_load`. Функция `parent ()` возвращает указатель на `YR_OBJECT`, соответствующий структуре, в которой содержится функция. Например, рассмотрим следующий фрагмент кода:
 
-	define_function(f1)
-	{
-		YR_OBJECT* module = module();
-		YR_OBJECT* parent = parent();
+```C
+define_function(f1)
+{
+	YR_OBJECT* module = module();
+	YR_OBJECT* parent = parent();
 
-		// parent == module;
-	}
+	// parent == module;
+}
 
-	define_function(f2)
-	{
-		YR_OBJECT* module = module();
-		YR_OBJECT* parent = parent();
+define_function(f2)
+{
+	YR_OBJECT* module = module();
+	YR_OBJECT* parent = parent();
 
-		// parent != module;
-	}
+	// parent != module;
+}
 
-	begin_declarations;
+begin_declarations;
 
-		declare_function("f1", "i", "i", f1);
+	declare_function("f1", "i", "i", f1);
 
-		begin_struct("foo");
+	begin_struct("foo");
 
-			declare_function("f2", "i", "i", f2);
+		declare_function("f2", "i", "i", f2);
 
-		end_struct("foo");
+	end_struct("foo");
 
-	end_declarations;
+end_declarations;
+```
 
 В функции `f1` переменная `module` указывает на верхний уровень `YR_OBJECT`, а также на переменную `parent`, потому что родителем для `f1` является сам модуль. Однако в функции `f2`  переменная `parent` указывает на `YR_OBJECT`, соответствующий структуре `foo`, а `module` указывает на верхний уровень `YR_OBJECT`, как и в первом случае.
 
@@ -3628,7 +3683,9 @@ YR_OBJECT* **get_object**(YR_OBJECT* object, const char* field, ...)
 
 Из функции вы также можете получить доступ к структуре `YR_SCAN_CONTEXT`, обсуждавшейся ранее в п. [4.4.1](#ch_4.4.1). Это полезно для функций, которые должны проверять сканируемый файл или память процесса. Вот как вы получаете указатель на структуру `YR_SCAN_CONTEXT`:
 
-	YR_SCAN_CONTEXT* context = scan_context();
+```C
+YR_SCAN_CONTEXT* context = scan_context();
+```
 
 <a name="ch_5">
 
@@ -3784,43 +3841,57 @@ YR_OBJECT* **get_object**(YR_OBJECT* object, const char* field, ...)
 
 Функции YARA могут быть использованы в Python-скриптах с помощью библиотеки `yara-python`. Как только библиотека будет построена и установлена, как описано в п. [1.1](#ch_1.1), вы получите доступ к полному потенциалу YARA из ваших скриптов Python. Первый шаг-импорт библиотеки YARA:
 
-	import yara
+```python
+import yara
+```
 
 Затем вам нужно будет скомпилировать ваши правила YARA, прежде чем применять их к вашим данным:
 
-	rules = yara.compile(filepath='/foo/bar/myrules')
+```python	
+rules = yara.compile(filepath='/foo/bar/myrules')
+```
 
 Аргумент по умолчанию - filepath, поэтому вам не нужно явно указывать его имя:
 
-	rules = yara.compile('/foo/bar/myrules')
+```python
+rules = yara.compile('/foo/bar/myrules')
+```
 
 Вы также можете скомпилировать свои правила из файлового объекта:
 
-	fh = open('/foo/bar/myrules')
-	rules = yara.compile(file=fh)
-	fh.close()
+```python	
+fh = open('/foo/bar/myrules')
+rules = yara.compile(file=fh)
+fh.close()
+```
 
 Или вы можете скомпилировать их непосредственно из строки Python:
 
-	rules = yara.compile(source='rule dummy { condition: true }')
+```python
+rules = yara.compile(source='rule dummy { condition: true }')
+```
 
 Если вы хотите скомпилировать группу файлов или строк одновременно, вы можете сделать это, используя `filepaths` или `sources` в наименовании аргумента:
 
-	rules = yara.compile(filepaths={
-		'namespace1':'/my/path/rules1',
-		'namespace2':'/my/path/rules2'
-	})
+```python
+rules = yara.compile(filepaths={
+	'namespace1':'/my/path/rules1',
+	'namespace2':'/my/path/rules2'
+})
 
-	rules = yara.compile(sources={
-		'namespace1':'rule dummy { condition: true }',
-		'namespace2':'rule dummy { condition: false }'
-	})
+rules = yara.compile(sources={
+	'namespace1':'rule dummy { condition: true }',
+	'namespace2':'rule dummy { condition: false }'
+})
+```
 
 Обратите внимание, что и `filepaths`, и `sources` должны быть словарями с ключами строкового типа. Ключи словаря используются в качестве идентификатора пространства имен, позволяющего различать правила с одинаковыми именами в разных источниках, как это происходит во втором примере с именем `dummy`.
 
 Метод `compile` также имеет необязательный логический параметр с именем `include`, который позволяет вам контролировать, следует ли принимать директиву `include` в исходных файлах, например:
 
-	rules = yara.compile('/foo/bar/my_rules', includes=False)
+```python
+rules = yara.compile('/foo/bar/my_rules', includes=False)
+```
 
 Если исходный файл содержит директивы `include`, показанный пример вызовет исключение.
 
@@ -3834,8 +3905,10 @@ YR_OBJECT* **get_object**(YR_OBJECT* object, const char* field, ...)
 
 Если вы используете внешние переменные в своих правилах, вы должны определить эти внешние переменные либо при компиляции правил, либо при применении правил к некоторому файлу. Чтобы определить ваши переменные в момент компиляции, вы должны передать параметр `externals` методу `compile`. Например:
 
-	rules = yara.compile('/foo/bar/my_rules’,
-		externals= {'var1': 'some string’, 'var2': 4, 'var3': True})
+```python
+rules = yara.compile('/foo/bar/my_rules’,
+	externals= {'var1': 'some string’, 'var2': 4, 'var3': True})
+```
 
 Параметр `externals` должен представлять собой словарь с именами переменных в качестве ключей и связанным значением типа строка, целое число или логическая переменная.
 
@@ -3843,49 +3916,67 @@ YR_OBJECT* **get_object**(YR_OBJECT* object, const char* field, ...)
 
 Во всех случаях `compile` возвращает экземпляр класса `yara.Rules` `Rules`. Этот класс имеет метод `save`, который можно использовать для сохранения скомпилированных правил в файл:
 
-	rules.save('/foo/bar/my_compiled_rules')
+```python
+rules.save('/foo/bar/my_compiled_rules')
+```
 
 Скомпилированные правила могут быть загружены позже с помощью метода `load`:
 
-	rules = yara.load('/foo/bar/my_compiled_rules')
+```python	
+rules = yara.load('/foo/bar/my_compiled_rules')
+```
 
 Начиная с YARA 3.4, `save` и` load` принимают файловые объекты. Например, вы можете сохранить ваши правила в буфере памяти с помощью этого кода:
 
-	import StringIO
+```python
+import StringIO
 
-	buff = StringIO.StringIO()
-	rules.save(file=buff)
+buff = StringIO.StringIO()
+rules.save(file=buff)
+```
 
 Сохраненные правила могут быть загружены из буфера памяти:
 
-	buff.seek(0)
-	rule = yara.load(file=buff)
+```python
+buff.seek(0)
+rule = yara.load(file=buff)
+```
 
 Результатом загрузки также является экземпляр класса `yara.Rules`.
 
 Экземпляры `Rules` также имеют метод` match`, который позволяет применять правила к файлу:
 
-	matches = rules.match('/foo/bar/my_file')
+```python
+matches = rules.match('/foo/bar/my_file')
+```
 
 Но вы также можете применить правила к строке Python:
 
-	with open('/foo/bar/my_file', 'rb') as f:
-		matches = rules.match(data=f.read())
+```python
+with open('/foo/bar/my_file', 'rb') as f:
+	matches = rules.match(data=f.read())
+```
 
 Или к запущенному процессу:
 
-	matches = rules.match(pid=1234)
+```python
+matches = rules.match(pid=1234)
+```
 
 Как и в случае с `compile`, метод` match` может получать определения для внешних переменных в аргументе `externals`.
 
-	matches = rules.match('/foo/bar/my_file',
-		externals= {'var1': 'some other string', 'var2': 100})
+```python
+matches = rules.match('/foo/bar/my_file',
+	externals= {'var1': 'some other string', 'var2': 100})
+```
 
 Внешние переменные, определенные во время компиляции, не требуют повторного определения при последующих вызовах метода `match`. Однако вы можете переопределить любую переменную по мере необходимости или сделать дополнительные определения, которые не были сделаны во время компиляции.
 
 В некоторых ситуациях, связанных с очень большим набором правил или большими файлами, метод `match` может занять слишком много времени для запуска. В этих ситуациях вам может пригодиться аргумент `timeout`:
 
-	matches = rules.match('/foo/bar/my_huge_file', timeout=60)
+```python
+matches = rules.match('/foo/bar/my_huge_file', timeout=60)
+```
 
 Если `match` не завершается до истечения указанного количества секунд, возникает исключение` TimeoutError`.
 
@@ -3905,14 +3996,16 @@ matches = rules.match('/foo/bar/my_file', callback=mycallback, which_callbacks=y
 
 Переданный словарь будет примерно таким:
 
-	{
-		'tags': ['foo', 'bar'],
-		'matches': True,
-		'namespace': 'default',
-		'rule': 'my_rule',
-		'meta': {},
-		'strings': [(81L, '$a', 'abc'), (141L, '$b', 'def')]
-	}
+```python
+{
+	'tags': ['foo', 'bar'],
+	'matches': True,
+	'namespace': 'default',
+	'rule': 'my_rule',
+	'meta': {},
+	'strings': [(81L, '$a', 'abc'), (141L, '$b', 'def')]
+}
+```
 
 Поле `matches` указывает, соответствует ли правило данным или нет. Поля `strings` - это список совпадающих строк с векторами вида:
 
@@ -3924,13 +4017,15 @@ matches = rules.match('/foo/bar/my_file', callback=mycallback, which_callbacks=y
 
 Например:
 
-	import yara
+```python
+import yara
 
-	def modules_callback(data):
-		print data
-		return yara.CALLBACK_CONTINUE
+def modules_callback(data):
+	print data
+	return yara.CALLBACK_CONTINUE
 
-	matches = rules.match('/foo/bar/my_file', modules_callback=modules_callback)
+matches = rules.match('/foo/bar/my_file', modules_callback=modules_callback)
+```
 
 Переданный словарь будет содержать информацию из модуля.
 
@@ -3938,9 +4033,11 @@ matches = rules.match('/foo/bar/my_file', callback=mycallback, which_callbacks=y
 
 Например:
 
-	yara.set_config(stack_size=65536)
-	yara.set_config(max_strings_per_rule=50000, stack_size=65536)
-	yara.set_config(max_strings_per_rule=20000)
+```python
+yara.set_config(stack_size=65536)
+yara.set_config(max_strings_per_rule=50000, stack_size=65536)
+yara.set_config(max_strings_per_rule=20000)
+```
 
 <a name="ch_6.1">
 
@@ -4130,17 +4227,21 @@ void callback_function(
 
 Функция обратного вызова имеет следующий прототип:
 
-	const char* include_callback(
-		const char* include_name,
-		const char* calling_rule_filename,
-		const char* calling_rule_namespace,
-		void* user_data);
+```C
+const char* include_callback(
+	const char* include_name,
+	const char* calling_rule_filename,
+	const char* calling_rule_namespace,
+	void* user_data);
+```
 
 Функция освобождения памяти имеет следующий прототип:
 
-	void include_free(
-		const char* callback_result_ptr,
-		void* user_data);
+```C
+void include_free(
+	const char* callback_result_ptr,
+	void* user_data);
+```
 
 После успешного добавления некоторых источников можно получить скомпилированные правила с помощью функции `yr_compiler_get_rules()`. Вы получите указатель на структуру `YR_RULES`, которая может быть использована для сканирования ваших данных, как описано в разделе сканирование данных. После того, как `yr_compiler_get_rules()` вызвана, вы не сможете добавить больше источников в компилятор, но вы можете получить несколько экземпляров скомпилированных правил, вызывая `yr_compiler_get_rules()` несколько раз.
 
@@ -4166,30 +4267,34 @@ void callback_function(
 
 Вы также можете сохранять свои правила в общие потоки данных и извлекать их из общих потоков данных с помощью функций `yr_rules_save_stream()` и `yr_rules_load_stream()` соответственно. Эти функции получают указатель на структуру `YR_STREAM`, определенную как:
 
-	typedef struct _YR_STREAM
-	{
-		void* user_data;
+```C
+typedef struct _YR_STREAM
+{
+	void* user_data;
 
-		YR_STREAM_READ_FUNC read;
-		YR_STREAM_WRITE_FUNC write;
+	YR_STREAM_READ_FUNC read;
+	YR_STREAM_WRITE_FUNC write;
 
-	} YR_STREAM;
+} YR_STREAM;
+```
 
 Вы должны предоставить свои собственные реализации для функций чтения и записи. Функция чтения используется `yr_rules_load_stream()` для чтения данных из вашего потока, а функция записи используется `yr_rules_save_stream()` для записи данных в ваш поток.
 
 Ваши реализации функций `read` и` write` должны отвечать этим прототипам:
 
-	size_t read(
-		void* ptr,
-		size_t size,
-		size_t count,
-		void* user_data);
+```C
+size_t read(
+	void* ptr,
+	size_t size,
+	size_t count,
+	void* user_data);
 
-	size_t write(
-		const void* ptr,
-		size_t size,
-		size_t count,
-		void* user_data);
+size_t write(
+	const void* ptr,
+	size_t size,
+	size_t count,
+	void* user_data);
+```
 
 Аргумент `ptr` - это указатель на буфер, куда функция `read` должна поместить прочитанные данные, или где функция `write` найдет данные, которые должны быть записаны в поток. В обоих случаях `size` - это размер каждого читаемого или записываемого элемента и `count` количества элементов. Общий размер читаемых или записываемых данных равен `size * count`. Функция `read` должна возвращать количество прочитанных элементов, функция `write` должна возвращать общее количество записанных элементов.
 
@@ -4205,18 +4310,22 @@ void callback_function(
 
 `YR_RULES`, который вы получили от компилятора, может использоваться с `yr_rules_scan_file()`, `yr_rules_scan_fd()` или `yr_rules_scan_mem()` для сканирования файла, дескриптора файла или буфера в памяти соответственно. Результаты сканирования возвращаются в вашу программу через функцию обратного вызова. Обратный вызов имеет следующий прототип:
 
-	int callback_function(
-		int message,
-		void* message_data,
-		void* user_data);
+```C
+int callback_function(
+	int message,
+	void* message_data,
+	void* user_data);
+```
 
 Возможные значения для `message`:
 
-	CALLBACK_MSG_RULE_MATCHING
-	CALLBACK_MSG_RULE_NOT_MATCHING
-	CALLBACK_MSG_SCAN_FINISHED
-	CALLBACK_MSG_IMPORT_MODULE
-	CALLBACK_MSG_MODULE_IMPORTED
+```C
+CALLBACK_MSG_RULE_MATCHING
+CALLBACK_MSG_RULE_NOT_MATCHING
+CALLBACK_MSG_SCAN_FINISHED
+CALLBACK_MSG_IMPORT_MODULE
+CALLBACK_MSG_MODULE_IMPORTED
+```
 
 Ваша функция обратного вызова будет вызываться один раз для каждого правила с сообщением `CALLBACK_MSG_RULE_MATCHING` или `CALLBACK_MSG_RULE_NOT_MATCHING`, в зависимости от того, выполняется правило или нет. В обоих случаях указатель на структуру `YR_RULE`, связанную с правилом, передается в аргументе `message_data`. Вам просто нужно выполнить приведение типа из `void*` в `YR_RULE*`, чтобы получить доступ к структуре.
 
@@ -4228,9 +4337,11 @@ void callback_function(
 
 Функция обратного вызова должна возвращать одно из следующих значений:
 
-	CALLBACK_CONTINUE
-	CALLBACK_ABORT
-	CALLBACK_ERROR
+```C
+CALLBACK_CONTINUE
+CALLBACK_ABORT
+CALLBACK_ERROR
+```
 
 Если она возвращает `CALLBACK_CONTINUE`, YARA продолжит сканирование, `CALLBACK_ABORT` прервет сканирование, но результатом функции `yr_rules_scan_XXXX` будет` ERROR_SUCCESS`. С другой стороны, `CALLBACK_ERROR` также прервет сканирование, но результат из `yr_rules_scan_XXXX` будет `ERROR_CALLBACK_ERROR`.
 
