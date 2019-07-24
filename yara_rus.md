@@ -1359,7 +1359,12 @@ pe.machine == pe.MACHINE_AMD64
 
 Функция, рассчитывающая значение контрольной суммы PE-файла
 
-Пример: `pe.checksum == pe.calculate_checksum()`
+Пример:
+
+```yara
+pe.checksum == pe.calculate_checksum()
+```
+
 ***
 **subsystem**
 
@@ -1379,7 +1384,12 @@ pe.machine == pe.MACHINE_AMD64
 - **SUBSYSTEM_XBOX**
 - **SUBSYSTEM_WINDOWS_BOOT_APPLICATION**
 
-Пример: `pe.subsystem == pe.SUBSYSTEM_NATIVE`
+Пример: 
+
+```yara
+pe.subsystem == pe.SUBSYSTEM_NATIVE
+```
+
 ***
 **timestamp**
 
@@ -1495,7 +1505,12 @@ pe.machine == pe.MACHINE_AMD64
 - **UP_SYSTEM_ONLY** - Файл должен исполняться только на однопроцессорной машине.
 - **BYTES_REVERSED_HI** - Байты машинного слова меняются местами (big endian). Этот флаг устарел и должен быть равен нулю.
 
-Пример: `pe.characteristics & pe.DLL`
+Пример:
+
+```yara
+pe.characteristics & pe.DLL
+```
+
 ***
 
 **linker_version**
@@ -1601,7 +1616,12 @@ pe.machine == pe.MACHINE_AMD64
 - **IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT** - Каталог для таблицы отложенного импорта. Структура таблицы отложенного импорта зависит от компоновщика.
 - **IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR** - Каталог для заголовков .NET.
 
-Пример: `pe.data_directories[pe.IMAGE_DIRECTORY_ENTRY_EXPORT].virtual_address != 0`
+Пример:
+
+```yara
+pe.data_directories[pe.IMAGE_DIRECTORY_ENTRY_EXPORT].virtual_address != 0
+```
+
 ***
 **number_of_sections**
 
@@ -1624,7 +1644,11 @@ pe.machine == pe.MACHINE_AMD64
 - **number_of_relocations** Добавлено в версии 3.8.0. Переменная, содержащая значение IMAGE_SECTION_HEADER::NumberOfRelocations.
 - **number_of_line_numbers** - Добавлено в версии 3.8.0. Переменная, содержащая значение IMAGE_SECTION_HEADER::NumberOfLineNumbers.
 
-Пример: `pe.sections[0].name == “.text”`
+Пример:
+
+```yara
+pe.sections[0].name == “.text”
+```
 
 Каждую характеристику секции можно проверить, выполнив побитовую операцию `AND` со следующими константами:
 
@@ -1642,7 +1666,12 @@ pe.machine == pe.MACHINE_AMD64
 - **SECTION_MEM_READ**
 - **SECTION_MEM_WRITE**
 
-Пример: `pe.sections[1].characteristics & SECTION_CNT_CODE`
+Пример:
+
+```yara
+pe.sections[1].characteristics & SECTION_CNT_CODE
+```
+
 ***
 **overlay**
 
@@ -1653,7 +1682,12 @@ pe.machine == pe.MACHINE_AMD64
 - **offset** - Смещение секции оверлея.
 - **size** - размер секции оверлея.
 
-Пример: `uint8(0x0d) at pe.overlay.offset and pe.overlay.size > 1024`
+Пример: 
+
+```yara
+uint8(0x0d) at pe.overlay.offset and pe.overlay.size > 1024
+```
+
 ***
 **number_of_resources**
 
@@ -1687,9 +1721,17 @@ pe.machine == pe.MACHINE_AMD64
 
 Все ресурсы должны иметь определенный тип, идентификатор (имя) и язык. Они могут выражены либо целыми числами, либо в виде строк.
 
-Пример: `pe.resources[0].type == pe.RESOURCE_TYPE_RCDATA`
+Пример:
 
-Пример: `pe.resources[0].name_string == “F\x00I\x00L\x00E\x00”`
+```yara
+pe.resources[0].type == pe.RESOURCE_TYPE_RCDATA
+```
+
+Пример:
+
+```yara
+pe.resources[0].name_string == “F\x00I\x00L\x00E\x00”
+```
 
 Типы ресурсов можно проверить с помощью следующих констант:
 
@@ -1731,7 +1773,12 @@ pe.machine == pe.MACHINE_AMD64
 
 [http://msdn.microsoft.com/en-us/library/windows/desktop/ms646987(v=vs.85).aspx](http://msdn.microsoft.com/en-us/library/windows/desktop/ms646987(v=vs.85).aspx)
 
-Пример: `pe.version_info[“CompanyName”] contains “Microsoft”`
+Пример:
+
+```yara
+pe.version_info[“CompanyName”] contains “Microsoft”
+```
+
 ***
 **number_of_signatures**
 
@@ -1791,11 +1838,20 @@ timestamp >= pe.signatures[n].not_before and timestamp <= pe.signatures[n].not_a
 - **clear_data** - Данные после расшифровки.
 - **version(version, [toolid])** - Добавлено в версию 3.5.0. Функция, возвращающая `true`, если PE-файл имеет указанную версию `version` в Rich-сигнатуре. Укажите необязательный аргумент `toolid` для сопоставления только в том случае, если оба аргумента совпадают для одной записи. Более подробную информацию можно найти здесь: [http://www.ntcore.com/files/richsign.htm](http://www.ntcore.com/files/richsign.htm)
 
-Пример: `pe.rich_signature.version(21005)`
+Пример:
+
+```yara
+pe.rich_signature.version(21005)
+```
 
 - **toolid(toolid, [version])** - Добавлено в версии 3.5.0. Функция, возвращающая `true`, если PE-файл имеет указанный идентификатор `toolid` в Rich-сигнатуре. Укажите необязательный аргумент `toolid` для сопоставления только в том случае, если оба аргумента совпадают для одной записи. Более подробную информацию можно найти здесь: [http://www.ntcore.com/files/richsign.htm](http://www.ntcore.com/files/richsign.htm)
 
-Пример: `pe.rich_signature.toolid(222)`
+Пример:
+
+```yara
+pe.rich_signature.toolid(222)
+```
+
 ***
 **exports(function_name)**
 
@@ -1809,7 +1865,12 @@ timestamp >= pe.signatures[n].not_before and timestamp <= pe.signatures[n].not_a
 
 Функция, возвращающая `true`, если PE-файл экспортирует функцию по ординалу `ordinal` или `false` в противном случае.
 
-Пример: `pe.exports(72)`
+Пример:
+
+```yara
+pe.exports(72)
+```
+
 ***
 **exports(/regular_expression/)**
 
@@ -1817,7 +1878,12 @@ timestamp >= pe.signatures[n].not_before and timestamp <= pe.signatures[n].not_a
 
 Функция, возвращающая `true`, если PE-файл экспортирует функции в соответствии с регулярным выражением  `/regular_expression/` или `false` в противном случае.
 
-Пример: `pe.exports(/^AXS@@/)`
+Пример:
+
+```yara
+pe.exports(/^AXS@@/)
+```
+
 ***
 **number_of_exports**
 
@@ -1835,7 +1901,12 @@ timestamp >= pe.signatures[n].not_before and timestamp <= pe.signatures[n].not_a
 
 Функция, возвращающая `true`, если PE-файл импортирует функцию `function_name` из библиотеки `dll_name`, или `false` в противном случае (`dll_name` не чувствительна к регистру).
 
-Пример: `pe.imports(“kernel32.dll”, “WriteProcessMemory”)`
+Пример:
+
+```yara
+pe.imports(“kernel32.dll”, “WriteProcessMemory”)
+```
+
 ***
 **imports(dll_name)**
 
@@ -1843,7 +1914,12 @@ timestamp >= pe.signatures[n].not_before and timestamp <= pe.signatures[n].not_a
 
 Функция, возвращающая `true`, если PE-файл импортирует что-либо из библиотеки `dll_name`, или `false` в противном случае (`dll_name` не чувствительна к регистру).
 
-Пример: `pe.imports(“kernel32.dll”)`
+Пример:
+
+```yara
+pe.imports(“kernel32.dll”)
+```
+
 ***
 **imports(dll_name, ordinal)**
 
@@ -1851,7 +1927,12 @@ timestamp >= pe.signatures[n].not_before and timestamp <= pe.signatures[n].not_a
 
 Функция, возвращающая `true`, если PE-файл импортирует функцию по ординалу `ordinal` из библиотеки `dll_name`, или `false` в противном случае (`dll_name` не чувствительна к регистру).
 
-Пример: `pe.imports(“WS2_32.DLL”, 3)`
+Пример:
+
+```yara
+pe.imports(“WS2_32.DLL”, 3)
+```
+
 ***
 **imports(dll_regexp, function_regexp)**
 
@@ -1859,7 +1940,12 @@ timestamp >= pe.signatures[n].not_before and timestamp <= pe.signatures[n].not_a
 
 Функция, возвращающая `true`, если PE-файл импортирует функции в соответствии с регулярным выражением  `function_regexp` из библиотеки в соответствии с регулярным выражением `dll_regexp` или `false` в противном случае. `dll_regexp` чувствителен к регистру, если не используется модификатор `/i` в регулярном выражении, как показано ниже.
 
-Пример: `pe.imports(/kernel32.dll/i, /(Read|Write)ProcessMemory/)`
+Пример:
+
+```yara
+pe.imports(/kernel32.dll/i, /(Read|Write)ProcessMemory/)
+```
+
 ***
 **locale(locale_identifier)**
 
@@ -1867,7 +1953,12 @@ timestamp >= pe.signatures[n].not_before and timestamp <= pe.signatures[n].not_a
 
 Функция, возвращающая `true`, если PE-файл имеет ресурс с указанным идентификатором локали `locale_identifier`. Идентификаторы локали являются 16-разрядными целыми числами и могут быть найдены здесь: [http://msdn.microsoft.com/en-us/library/windows/desktop/dd318693(v=vs.85).aspx](http://msdn.microsoft.com/en-us/library/windows/desktop/dd318693(v=vs.85).aspx)
 
-Пример: `pe.locale(0x0419) // Россия (RU)`
+Пример:
+
+```yara
+pe.locale(0x0419) // Россия (RU)
+```
+
 ***
 **language(language_identifier)**
 
@@ -1875,7 +1966,12 @@ timestamp >= pe.signatures[n].not_before and timestamp <= pe.signatures[n].not_a
 
 Функция, возвращающая `true`, если PE-файл имеет ресурс с указанным идентификатором языка `language_identifier`. Идентификаторы языка представляют собой 8-разрядные целые числа и могут быть найдены здесь: [http://msdn.microsoft.com/en-us/library/windows/desktop/dd318693(v=vs.85).aspx](http://msdn.microsoft.com/en-us/library/windows/desktop/dd318693(v=vs.85).aspx)
 
-Пример: `pe.language(0x0A) // Испания`
+Пример:
+
+```yara
+pe.language(0x0A) // Испания
+```
+
 ***
 **imphash()**
 
@@ -1883,13 +1979,23 @@ timestamp >= pe.signatures[n].not_before and timestamp <= pe.signatures[n].not_a
 
 Функция, возвращающая хэш импорта или imphash для PE-файла. Imphash - это MD5-хэш таблицы импорта PE-файла после некоторой нормализации. Imphash для PE-файла может быть также вычислена с помощью [pefile](https://github.com/erocarrera/pefile) и вы можете найти больше информации в [Mandiant’s blog](https://www.fireeye.com/blog/threat-research/2014/01/tracking-malware-import-hashing.html).
 
-Пример: `pe.imphash() == “b8bb385806b89680e13fc0cf24f4431e”`
+Пример:
+
+```yara
+pe.imphash() == “b8bb385806b89680e13fc0cf24f4431e”
+```
+
 ***
 **section_index(name)**
 
 Функция, возвращающая индекс секции с именем `name` (`name` чувствительно к регистру).
 
-Пример: `pe.section_index(“.TEXT”)`
+Пример:
+
+```yara
+pe.section_index(“.TEXT”)
+```
+
 ***
 **section_index(addr)**
 
@@ -1897,7 +2003,12 @@ timestamp >= pe.signatures[n].not_before and timestamp <= pe.signatures[n].not_a
 
 Функция, возвращающая индекс секции с адресом `addr`. Адрес `addr` может быть смещением в файле или адресом в памяти.
 
-Пример: `pe.section_index(pe.entry_point)`
+Пример:
+
+```yara
+pe.section_index(pe.entry_point)
+```
+
 ***
 **is_dll()**
 
@@ -1905,7 +2016,12 @@ timestamp >= pe.signatures[n].not_before and timestamp <= pe.signatures[n].not_a
 
 Функция возвращает `true` если PE-файл является DLL-библиотекой.
 
-Пример: `pe.is_dll()`
+Пример:
+
+```yara
+pe.is_dll()
+```
+
 ***
 **is_32bit()**
 
@@ -1913,7 +2029,12 @@ timestamp >= pe.signatures[n].not_before and timestamp <= pe.signatures[n].not_a
 
 Функция возвращает `true` если PE-файл является 32-битным.
 
-Пример: `pe.is_32bit()`
+Пример:
+
+```yara
+pe.is_32bit()
+```
+
 ***
 **is_64bit()**
 
@@ -1921,7 +2042,12 @@ timestamp >= pe.signatures[n].not_before and timestamp <= pe.signatures[n].not_a
 
 Функция возвращает `true` если PE-файл является 64-битным.
 
-Пример: `pe.is_64bit()`
+Пример:
+
+```yara
+pe.is_64bit()
+```
+
 ***
 **rva_to_offset(addr)**
 
@@ -1929,7 +2055,11 @@ timestamp >= pe.signatures[n].not_before and timestamp <= pe.signatures[n].not_a
 
 Функция, возвращающая смещение в файле для RVA-адреса `addr`.
 
-Пример: `pe.rva_to_offset(pe.entry_point)`
+Пример:
+
+```yara
+pe.rva_to_offset(pe.entry_point)
+```
 
 <a name="ch_3.2">
 
@@ -1972,7 +2102,12 @@ rule elf_64
 - **ET_DYN** - Общий объектный файл.
 - **ET_CORE** - Файл ядра.
 
-Пример: `elf.type == elf.ET_EXEC`
+Пример:
+
+```yara
+elf.type == elf.ET_EXEC
+```
+
 ***
 **machine**
 
@@ -1992,7 +2127,12 @@ rule elf_64
 - **EM_X86_64**
 - **EM_AARCH64**
 
-Пример: elf.machine == elf.EM_X86_64
+Пример:
+
+```yara
+elf.machine == elf.EM_X86_64
+```
+
 ***
 **entry_point**
 
@@ -2008,7 +2148,11 @@ rule elf_64
 
 - **name** - Имя секции.
 
-Пример: `elf.sections[3].name == “.bss”`
+Пример:
+
+```yara
+elf.sections[3].name == “.bss”
+```
 
 - **size** - Размер секции в байтах. За исключением секций типа `SHT_NOBITS` (см. тип `type` секции ниже), секция занимает `sh_size` байт в файле. Раздел `SHT_NOBITS` может иметь ненулевой размер в памяти, но он не занимает места в файле.
 - **offset** - Смещение от начала файла до первого байта секции. Один из типов секции `SHT_NOBITS`, который будет описан ниже, не занимает места в файле, а его элемент `offset` определяет абстрактное размещение в файле.
@@ -2030,7 +2174,11 @@ rule elf_64
 	- **SHF_ALLOC** - Секция занимает память при работе процесса. Некоторые управляющие секции не располагаются в образе памяти объектного файла. Этот атрибут выключен у таких разделов.
 	- **SHF_EXECINSTR** - Секция содержит исполняемые машинные инструкции.
 
-Пример: `elf.sections[2].flags & elf.SHF_WRITE`
+Пример:
+
+```yara
+elf.sections[2].flags & elf.SHF_WRITE
+```
 
 - **address** - Добавлено в версии 3.6.0. Виртуальный адрес, с которого начинается секция.
 ***
@@ -2224,31 +2372,54 @@ rules.match(pe_file, modules_data={'cuckoo': bytes(report_data)})
 
 - **http_request(regexp)** - Функция возвращает `true`, если программа отправила HTTP-запрос на URL-адрес, соответствующий регулярному выражению `regexp`.
 
-Пример: `cuckoo.network.http_request(/evil.com/)`
+Пример:
+
+```yara
+cuckoo.network.http_request(/evil.com/)
+```
 
 - **http_get(regexp)** - Аналогичен `http_request()`, но учитывает только запросы `GET`.
 - **http_post(regexp)** - Аналогичен `http_request ()`, но учитывает только запросы `POST`.
 - **dns_lookup(regexp)** - Функция возвращает `true`, если программа отправила запрос на разрешение имени домена, соответствующего указанному регулярному выражению.
 
-Пример: `cuckoo.network.dns_lookup(/evil.com/)`
+Пример:
+
+```yara
+cuckoo.network.dns_lookup(/evil.com/)
+```
+
 ***
 **registry**
 
 - **key_access(regexp)** - Функция возвращает `true`, если программа произвела обращение к записи реестра, соответствующей регулярному выражению `regexp`.
 
-Пример: `cuckoo.registry.key_access(/\Software\Microsoft\Windows\CurrentVersion\Run/)`
+Пример:
+
+```yara
+cuckoo.registry.key_access(/\Software\Microsoft\Windows\CurrentVersion\Run/)
+```
+
 ***
 **filesystem**
 
 - **file_access(regexp)** - Функция возвращает `true`, если программа произвела обращение к файлу, соответствующему регулярному выражению `regexp`.
 
-Пример: `cuckoo.filesystem.file_access(/autoexec.bat/)`
+Пример:
+
+```yara
+cuckoo.filesystem.file_access(/autoexec.bat/)
+```
+
 ***
 **sync**
 
 - **mutex(regexp)** - Функция возвращает `true`, если программа открыла и создала мьютекс,  соответствующий регулярному выражению `regexp`.
 
-Пример: `cuckoo.sync.mutex(/EvilMutexName/)`
+Пример:
+
+```yara
+cuckoo.sync.mutex(/EvilMutexName/)
+```
 
 <a name="ch_3.4">
 
@@ -2289,13 +2460,22 @@ rules.match(pe_file, modules_data={'cuckoo': bytes(report_data)})
 
 Функция, возвращающая строку с типом файла.
 
-Пример: `magic.type() contains “PDF”`
+Пример:
+
+```yara
+magic.type() contains “PDF”
+```
+
 ***
 **mime_type()**
 
 Функция, возвращающая строку с типом MIME файла.
 
-Пример: `magic.mime_type() == “application/pdf”`
+Пример:
+
+```yara
+magic.mime_type() == “application/pdf”`
+```
 
 <a name="ch_3.5">
 
@@ -2315,13 +2495,23 @@ rules.match(pe_file, modules_data={'cuckoo': bytes(report_data)})
 
 Возвращает  MD5-хэш для `size` байтов, начиная со смещения `offset`. При сканировании запущенного процесса аргумент `offset` должен быть виртуальным адресом в адресном пространстве процесса. Возвращаемая строка всегда в нижнем регистре.
 
-Пример: `hash.md5(0, filesize) == “feba6c919e3797e7778e8f2e85fa033d”`
+Пример:
+
+```yara
+hash.md5(0, filesize) == “feba6c919e3797e7778e8f2e85fa033d”
+```
+
 ***
 **md5(string)**
 
 Возвращает MD5-хэш строки `string`.
 
-Example: `hash.md5(“dummy”) == “275876e34cf609db118f3d84b799a790”`
+Пример:
+
+```yara
+hash.md5(“dummy”) == “275876e34cf609db118f3d84b799a790”
+```
+
 ***
 **sha1(offset, size)**
 
@@ -2337,7 +2527,7 @@ Example: `hash.md5(“dummy”) == “275876e34cf609db118f3d84b799a790”`
 ***
 **sha256(string)**
 
-Возвращает SHA256-хэш строки `string`..
+Возвращает SHA256-хэш строки `string`.
 ***
 **checksum32(offset, size)**
 
@@ -2373,19 +2563,34 @@ math.in_range(2, 1, 3)
 
 Возвращает энтропию `size` байт начиная со смещения `offset`. При сканировании запущенного процесса аргумент `offset` должен содержать виртуальный адрес в адресном пространстве процесса. Возвращаемое значение - число с плавающей запятой.
 
-Пример: `math.entropy(0, filesize) >= 7`
+Пример:
+
+```yara
+math.entropy(0, filesize) >= 7
+```
+
 ***
 **entropy(string)**
 
 Возвращает энтропию строки `string`.
 
-Пример: `math.entropy(“dummy”) > 7`
+Пример:
+
+```yara
+math.entropy(“dummy”) > 7
+```
+
 ***
 **monte_carlo_pi(offset, size)**
 
 Возвращает процент от числа Pi при расчете числа Pi методом Монте-Карло с использованием последовательности чисел размером `size` байт, начиная со смещения `offset`. При сканировании запущенного процесса аргумент `offset` должен содержать виртуальный адрес в адресном пространстве процесса. Возвращаемое значение - число с плавающей запятой.
 
-Пример: `math.monte_carlo_pi(0, filesize) < 0.0`
+Пример:
+
+```yara
+math.monte_carlo_pi(0, filesize) < 0.0
+```
+
 ***
 **monte_carlo_pi(string)**
 
@@ -2395,7 +2600,12 @@ math.in_range(2, 1, 3)
 
 Возвращает значение коэффициента последовательной корреляции для `size` байт, начиная со смещения `offset`. При сканировании запущенного процесса аргумент `offset` должен содержать виртуальный адрес в адресном пространстве процесса. Возвращаемое значение - число с плавающей запятой в пределах от 0.0 до 1.0.
 
-Пример: `math.serial_correlation(0, filesize) < 0.2`
+Пример:
+
+```yara
+math.serial_correlation(0, filesize) < 0.2
+```
+
 ***
 **serial_correlation(string)**
 
@@ -2405,7 +2615,12 @@ math.in_range(2, 1, 3)
 
 Возвращает среднее значение для `size` байт, начиная со смещения `offset`. При сканировании запущенного процесса аргумент `offset` должен содержать виртуальный адрес в адресном пространстве процесса. Возвращаемое значение - число с плавающей запятой.
 
-Пример: `math.mean(0, filesize) < 72.0`
+Пример:
+
+```yara
+math.mean(0, filesize) < 72.0
+```
+
 ***
 **mean(string)**
 
@@ -2417,7 +2632,12 @@ math.in_range(2, 1, 3)
 
 Среднее значение равномерно распределенной случайной выборки байтов равно числу 127.5, которое доступно как константа `math.MEAN_BYTES`.
 
-Пример: `math.deviation(0, filesize, math.MEAN_BYTES) == 64.0`
+Пример:
+
+```yara
+math.deviation(0, filesize, math.MEAN_BYTES) == 64.0
+```
+
 ***
 **deviation(string, mean)**
 
@@ -2477,13 +2697,23 @@ rule blop_stream
 
 Строка с версией, содержащаяся в корне метаданных.
 
-Пример: `dotnet.version == “v2.0.50727”`
+Пример:
+
+```yara
+dotnet.version == “v2.0.50727”
+```
+
 ***
 **module_name**
 
 Наименование модуля.
 
-Example: `dotnet.module_name == “axs”`
+Пример:
+
+```yara
+dotnet.module_name == “axs”
+```
+
 ***
 **number_of_streams**
 
@@ -2497,7 +2727,12 @@ Example: `dotnet.module_name == “axs”`
 - **offset** - Смещение потока.
 - **size** - Размер потока.
 
-Пример: `dotnet.streams[0].name == “#~”`
+Пример:
+
+```yara
+dotnet.streams[0].name == “#~”
+```
+
 ***
 **number_of_guids**
 
@@ -2507,7 +2742,12 @@ Example: `dotnet.module_name == “axs”`
 
 Начинающийся с нуля массив строк, по одной для каждого GUID. Доступ к отдельным объектам массива можно получить с помощью оператора `[]`.
 
-Пример: `dotnet.guids[0] == “99c08ffd-f378-a891-10ab-c02fe11be6ef”`
+Пример:
+
+```yara
+dotnet.guids[0] == “99c08ffd-f378-a891-10ab-c02fe11be6ef”
+```
+
 ***
 **number_of_resources**
 
@@ -2521,7 +2761,12 @@ Example: `dotnet.module_name == “axs”`
 - **length** - Длина данных ресурса.
 - **name** - Имя ресурса (в виде строки).
 
-Пример: `uint16be(dotnet.resources[0].offset) == 0x4d5a`
+Пример:
+
+```yara
+uint16be(dotnet.resources[0].offset) == 0x4d5a
+```
+
 ***
 **assembly**
 
@@ -2531,9 +2776,18 @@ Example: `dotnet.module_name == “axs”`
 - **name** - Строка, содержащая имя сборки.
 - **culture** - Строка, содержащая `language/country/region` данной сборки.
 
-Пример: `dotnet.assembly.name == “Keylogger”`
+Пример:
 
-Пример: `dotnet.assembly.version.major == 7 and dotnet.assembly.version.minor == 0`
+```yara
+dotnet.assembly.name == “Keylogger”
+```
+
+Пример:
+
+```yara
+dotnet.assembly.version.major == 7 and dotnet.assembly.version.minor == 0
+```
+
 ***
 **number_of_modulerefs**
 
@@ -2543,7 +2797,12 @@ Example: `dotnet.module_name == “axs”`
 
 Начинающийся с нуля массив строк, по одной на каждую ссылку на модуль в .NET-файле. Доступ к отдельным объектам массива можно получить с помощью оператора `[]`.
 
-Example: `dotnet.modulerefs[0] == “kernel32”`
+Пример:
+
+```yara
+dotnet.modulerefs[0] == “kernel32”
+```
+
 ***
 **typelib**
 
@@ -2579,7 +2838,11 @@ Example: `dotnet.modulerefs[0] == “kernel32”`
 
 Функция возвращает целое число - количество секунд с 1 января 1970 года.
 
-Пример: `pe.timestamp > time.now()`
+Пример:
+
+```yara
+pe.timestamp > time.now()
+```
 
 <a name="ch_4">
 
