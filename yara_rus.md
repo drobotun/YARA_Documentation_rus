@@ -562,14 +562,16 @@ rule XorExample4
 
 [Регулярные выражения](https://www.regular-expressions.info) являются одной из самых мощных функций YARA. Они определяются так же, как и текстовые строки, но заключаются в косые черты вместо двойных кавычек, как в языке программирования Perl.
 
-	rule RegExpExample1
-	{
-		strings:
-			$re1 = /md5: [0-9a-fA-F]{32}/
-			$re2 = /state: (on|off)/
-		condition:
-			$re1 and $re2
-	}
+```yara
+rule RegExpExample1
+{
+	strings:
+		$re1 = /md5: [0-9a-fA-F]{32}/
+		$re2 = /state: (on|off)/
+	condition:
+		$re1 and $re2
+}
+```
 
 Регулярные выражения могут также сопровождаться модификаторами `nocase`, `ascii`, `wide` и `fullword`, как и в текстовых строках. Семантика этих модификаторов одинакова в обоих случаях.
 
@@ -637,16 +639,18 @@ rule XorExample4
 
 Строковые идентификаторы могут также использоваться в условии, действуя как булевы переменные, значение которых зависит от наличия или отсутствия связанной строки в файле.
 
-	rule Example
-	{
-		strings:
-			$a = "text1"
-			$b = "text2"
-			$c = "text3"
-			$d = "text4"
-		condition:
-			($a or $b) and ($c or $d)
-	}
+```yara
+rule Example
+{
+	strings:
+		$a = "text1"
+		$b = "text2"
+		$c = "text3"
+		$d = "text4"
+	condition:
+		($a or $b) and ($c or $d)
+}
+```
 
 <a name="ch_2.3.1">
 
@@ -656,14 +660,16 @@ rule XorExample4
 
 Иногда нам нужно знать не только, присутствует ли определенная строка или нет, но и сколько раз строка появляется в файле или памяти процесса. Число вхождений каждой строки представлено переменной, имя которой строковый идентификатор, но с символом `#` вместо символа `$`. Например:
 
-	rule CountExample
-	{
-		strings:
-			$a = "dummy1"
-			$b = "dummy2"
-		condition:
-			#a == 6 and #b > 10
-	}
+```yara
+rule CountExample
+{
+	strings:
+		$a = "dummy1"
+		$b = "dummy2"
+	condition:
+		#a == 6 and #b > 10
+}
+```
 
 Это правило соответствует любому файлу или процессу, содержащему строку `$a` ровно шесть раз и более десяти вхождений строки `$b`.
 
@@ -675,27 +681,31 @@ rule XorExample4
 
 В большинстве случаев, когда строковый идентификатор используется в условии, мы хотим знать, находится ли связанная строка где-либо в  файле или памяти процесса, но иногда нам нужно знать, находится ли строка в некотором определенном смещении в файле или в некотором виртуальном адресе в адресном пространстве процесса. В таких ситуациях оператор `at`- это то, что нам нужно. Этот оператор используется, как показано в следующем примере:
 
-	rule AtExample
-	{
-		strings:
-			$a = "dummy1"
-			$b = "dummy2"
-		condition:
-			$a at 100 and $b at 200
-	}
+```yara
+rule AtExample
+{
+	strings:
+		$a = "dummy1"
+		$b = "dummy2"
+	condition:
+		$a at 100 and $b at 200
+}
+```
 
 Выражение `$a at 100` в приведенном выше примере истинно только в том случае, если строка `$a` находится со смещением 100 в файле (или по виртуальному адресу 100, если применяется к запущенному процессу). Строка `$b` должна находится по смещению 200. Обратите внимание, что оба смещения являются десятичными, однако шестнадцатеричные числа также можно использовать, добавив префикс `0x` перед числом, как в языке программирования C, что очень удобно при написании виртуальных адресов. Также обратите внимание на более высокий приоритет оператора `at` над `and`.
 
 В то время как оператор `at` позволяет искать строку с некоторым фиксированным смещением в файле или виртуальном адресе в пространстве памяти процесса, оператор `in` позволяет искать строку в диапазоне смещений или адресов.
 
-	rule InExample
-	{
-		strings:
-			$a = "dummy1"
-			$b = "dummy2"
-		condition:
-			$a in (0..100) and $b in (100..filesize)
-	}
+```yara
+rule InExample
+{
+	strings:
+		$a = "dummy1"
+		$b = "dummy2"
+	condition:
+		$a in (0..100) and $b in (100..filesize)
+}
+```
 
 В приведенном выше примере строка `$a` должна быть найдена со смещением от 0 до 100, а строка `$b` - со смещением от 100 до конца файла. Опять же, по умолчанию, числа десятичные.
 
@@ -719,11 +729,13 @@ rule XorExample4
 
 Строковые идентификаторы не являются единственными переменными, которые могут отображаться в условии (на самом деле, правила могут быть определены без определения строки, как будет показано ниже), есть и другие специальные переменные, которые могут быть использованы. Одна из этих специальных переменных - переменная `filesize`, которая содержит, как указывает ее имя, размер сканируемого файла. Размер выражается в байтах.
 
-	rule FileSizeExample
-	{
-		condition:
-			filesize > 200KB
-	}
+```yara
+rule FileSizeExample
+{
+	condition:
+		filesize > 200KB
+}
+```
 
 Предыдущий пример также демонстрирует использование постфикса *KB*. Этот постфикс при присоединении к числовой константе автоматически умножает значение константы на 1024. Постфикс *MB* можно использовать для умножения значения на 2^20. Оба постфикса можно использовать только с десятичными константами.
 
@@ -737,21 +749,23 @@ rule XorExample4
 
 Другой специальной переменной, которая может использоваться в правиле, является `entrypoint`. Если файл является Portable Executable (PE) или Executable and Linkable Format (ELF), эта переменная содержит смещение точки входа исполняемого файла в случае сканирования файла. Если мы сканируем запущенный процесс, точка входа будет содержать виртуальный адрес точки входа основного исполняемого файла. Обычно эта переменная используется для поиска некоторого шаблона в точке входа для обнаружения упаковщиков или простых файловых инфекторов.
 
-	rule EntryPointExample1
-	{
-		strings:
-			$a = { E8 00 00 00 00 }
-		condition:
-			$a at entrypoint
-	}
+```yara
+rule EntryPointExample1
+{
+	strings:
+		$a = { E8 00 00 00 00 }
+	condition:
+		$a at entrypoint
+}
 
-	rule EntryPointExample2
-	{
-		strings:
-			$a = { 9C 50 66 A1 ?? ?? ?? 00 66 A9 ?? ?? 58 0F 85 }
-		condition:
-			$a in (entrypoint..entrypoint + 10)
-	}
+rule EntryPointExample2
+{
+	strings:
+		$a = { 9C 50 66 A1 ?? ?? ?? 00 66 A9 ?? ?? 58 0F 85 }
+	condition:
+		$a in (entrypoint..entrypoint + 10)
+}
+```
 
 Наличие переменной `entrypoint` в правиле означает, что только файлы PE или ELF могут удовлетворять этому правилу. Если файл не является PE или ELF, любое правило, использующее эту переменную, получает значение `false`.
 
@@ -767,32 +781,36 @@ rule XorExample4
 
 Есть много ситуаций, в которых вы можете записать условия, которые зависят от данных, хранящихся по определенному смещению в файле или по виртуальному адресу процесса, в зависимости от того, сканируем мы файл или запущенный процесс. В таких случаях можно использовать одну из следующих функций для чтения данных из файла с заданным смещением:
 
-	int8(смещение или виртуальный адрес)
-	int16(смещение или виртуальный адрес)
-	nt32(смещение или виртуальный адрес)
+```yara
+int8(смещение или виртуальный адрес)
+int16(смещение или виртуальный адрес)
+int32(смещение или виртуальный адрес)
 
-	uint8(смещение или виртуальный адрес)
-	uint16(смещение или виртуальный адрес)
-	uint32(смещение или виртуальный адрес)
+uint8(смещение или виртуальный адрес)
+uint16(смещение или виртуальный адрес)
+uint32(смещение или виртуальный адрес)
 
-	int8be(смещение или виртуальный адрес)
-	int16be(смещение или виртуальный адрес)
-	int32be(смещение или виртуальный адрес)
+int8be(смещение или виртуальный адрес)
+int16be(смещение или виртуальный адрес)
+int32be(смещение или виртуальный адрес)
 
-	uint8be(смещение или виртуальный адрес)
-	uint16be(смещение или виртуальный адрес)
-	uint32be(смещение или виртуальный адрес)
+uint8be(смещение или виртуальный адрес)
+uint16be(смещение или виртуальный адрес)
+uint32be(смещение или виртуальный адрес)
+```
 
 Функции `intXX` считывают 8, 16 и 32-разрядные целые числа со знаком по указанному смещению или виртуальному адресу, а функции `uintXX` - целые числа без знака. Как 16, так и 32-разрядные целые числа считываются в little-endian формате. Если вы хотите прочитать целое число в big-endian формате, используйте соответствующую функцию, заканчивающуюся на *be*. В качестве значения смещения или виртуального адреса может быть любое выражение, возвращающее целое число без знака, включая возвращаемое значение одной из функций `uintXX`. В качестве примера рассмотрим правило для определения PE-файлов:
 
-	rule IsPE
-	{
-		condition:
-			// MZ-сигнатура по смещению 0 и ...
-			uint16(0) == 0x5A4D and
-			// ... PE-сигнатура по смещению 0x3C в MZ-заголовке 
-			uint32(uint32(0x3C)) == 0x00004550
-	}
+```yara
+rule IsPE
+{
+	condition:
+		// MZ-сигнатура по смещению 0 и ...
+		uint16(0) == 0x5A4D and
+		// ... PE-сигнатура по смещению 0x3C в MZ-заголовке 
+		uint32(uint32(0x3C)) == 0x00004550
+}
+```
 
 <a name="ch_2.3.7">
 
@@ -802,60 +820,68 @@ rule XorExample4
 
 Есть обстоятельства, в которых надо указать, что файл должен содержать определенное количество строк из заданного набора. Не все строки из наборе должны присутствовать в файле, но, по крайней мере некоторые из них должны содержаться в файле. В этих ситуациях можно использовать оператор `of`.
 
-	rule OfExample1
-	{
-		strings:
-			$a = "dummy1"
-			$b = "dummy2"
-			$c = "dummy3"
-		condition:
-			2 of ($a,$b,$c)
-	}
+```yara
+rule OfExample1
+{
+	strings:
+		$a = "dummy1"
+		$b = "dummy2"
+		$c = "dummy3"
+	condition:
+		2 of ($a,$b,$c)
+}
+```
 
 Это правило требует, чтобы по крайней мере две строки из набора (`$a`, `$b`, `$c`) присутствовали в файле, но не имеет значения, какие две из них. Конечно, при использовании этого оператора, число до оператора должно быть меньше или равно количеству строк в наборе.
 
 Элементы набора могут быть явно перечислены, как в предыдущем примере, или могут быть указаны с помощью подстановочных символов. Например:
 
-	rule OfExample2
-	{
-		strings:
-			$foo1 = "foo1"
-			$foo2 = "foo2"
-			$foo3 = "foo3"
-		condition:
-			2 of ($foo*) // эквивалент для выражения 2 of ($foo1,$foo2,$foo3)
-	}
+```yara
+rule OfExample2
+{
+	strings:
+		$foo1 = "foo1"
+		$foo2 = "foo2"
+		$foo3 = "foo3"
+	condition:
+		2 of ($foo*) // эквивалент для выражения 2 of ($foo1,$foo2,$foo3)
+}
 
-	rule OfExample3
-	{
-		strings:
-			$foo1 = "foo1"
-			$foo2 = "foo2"
-			$bar1 = "bar1"
-			$bar2 = "bar2"
-		condition:
-			3 of ($foo*,$bar1,$bar2)
-	}
+rule OfExample3
+{
+	strings:
+		$foo1 = "foo1"
+		$foo2 = "foo2"
+		$bar1 = "bar1"
+		$bar2 = "bar2"
+	condition:
+		3 of ($foo*,$bar1,$bar2)
+}
+```
 
 Вы даже можете использовать `($*)` для ссылки на все строки в правиле или написать эквивалентное ключевое слово `them` для большей наглядности.
 
-	rule OfExample4
-	{
-		strings:
-			$a = "dummy1"
-			$b = "dummy2"
-			$c = "dummy3"
-		condition:
-			1 of them // эквивалент для выражения 1 of ($*)
-	}
+```yara
+rule OfExample4
+{
+	strings:
+		$a = "dummy1"
+		$b = "dummy2"
+		$c = "dummy3"
+	condition:
+		1 of them // эквивалент для выражения 1 of ($*)
+}
+```
 
 Во всех приведенных выше примерах число строк задается числовой константой, но может использоваться любое выражение, возвращающее числовое значение. Также могут быть использованы ключевые слова `any` и `all`.
 
-	all of them       // все строки в правиле
-	any of them       // любая строка в правиле
-	all of ($a*)      // все строки, начинающиеся с $a
-	any of ($a,$b,$c) // любая строка из $a, $b или $c
-	1 of ($*)         // то же самое, что и "any of them"
+```yara
+all of them       // все строки в правиле
+any of them       // любая строка в правиле
+all of ($a*)      // все строки, начинающиеся с $a
+any of ($a,$b,$c) // любая строка из $a, $b или $c
+1 of ($*)         // то же самое, что и "any of them"
+```
 
 <a name="ch_2.3.8">
 
@@ -864,8 +890,10 @@ rule XorExample4
 </a>
 
 Есть еще один оператор, который очень похож на оператор `of`, но более эффективный. Это оператор `for...of`. Синтаксис данного оператора:
+```yara
 
-	for expression of string_set : ( boolean_expression )
+for expression of string_set : ( boolean_expression )
+```
 
 И его смысл таков: из строк в `string_set` по крайней мере `expression` из них должно удовлетворять условию `boolean_expression`.
 
@@ -875,19 +903,25 @@ rule XorExample4
 
 Посмотрите на следующее выражение:
 
-	for any of ($a, $b, $c) : ($ at entrypoint)
+```yara	
+for any of ($a, $b, $c) : ($ at entrypoint)
+```
 
 Символ `$` в булевом выражении не привязан к какой-либо конкретной строке, он будет сначала привязан к строке `$a`, затем к `$b`, после чего к `$c` в трех последовательных вычислениях значения выражения `($ at entrypoint)`.
 
 Если внимательно посмотреть то видно, что оператор `of` является частным случаем `for...of`. Следующие два выражения являются одинаковыми:
 
-	any of ($a,$b,$c)
-	for any of ($a,$b,$c) : ($)
+```yara
+any of ($a,$b,$c)
+for any of ($a,$b,$c) : ($)
+```
 
 Можно также использовать символы `#` и `@` для ссылки на число вхождений и первое смещение каждой строки соответственно.
 
-	for all of them : (# > 3)
-	for all of ($a*) : (@ > @b)
+```yara
+for all of them : (# > 3)
+for all of ($a*) : (@ > @b)
+```
 
 <a name="ch_2.3.9">
 
@@ -897,14 +931,16 @@ rule XorExample4
 
 При использовании операторов `of` и `for...of`, за которыми следует `them`, присвоение каждой строке отдельного идентификатора, обычно является лишним. Поскольку мы не ссылаемся на какую-либо строку отдельно, нам не нужно предоставлять уникальный идентификатор для каждой из них. В таких ситуациях можно объявить анонимные строки с идентификаторами, состоящими только из символа`$`, как в следующем примере:
 
-	rule AnonymousStrings
-	{
-		strings:
-			$ = "dummy1"
-			$ = "dummy2"
-		condition:
-			1 of them
-	}
+```yara
+rule AnonymousStrings
+{
+	strings:
+		$ = "dummy1"
+		$ = "dummy2"
+	condition:
+		1 of them
+}
+```
 
 <a name="ch_2.3.10">
 
@@ -916,35 +952,45 @@ rule XorExample4
 
 Иногда необходимо перебирать некоторые из этих смещений и убедиться, что они удовлетворяют заданному условию. Например:
 
-	rule Occurrences
-	{
-		strings:
-			$a = "dummy1"
-			$b = "dummy2"
-		condition:
-			for all i in (1,2,3) : ( @a[i] + 10 == @b[i] )
-	}
+```yara
+rule Occurrences
+{
+	strings:
+		$a = "dummy1"
+		$b = "dummy2"
+	condition:
+		for all i in (1,2,3) : ( @a[i] + 10 == @b[i] )
+}
+```
 
 Показанное выше правило гласит, что первые три вхождения `$b` должны быть на расстоянии 10 байт от первых трех вхождений `$a`.
 
 То же самое условие можно записать и таким образом:
 
-	for all i in (1..3) : (@a[i] + 10 == @b[i])
+```yara
+for all i in (1..3) : (@a[i] + 10 == @b[i])
+```
 
 Обратите внимание, что мы используем ряд (1..3) вместо перечисления значений индекса (1,2,3). Однако, не обязательно использовать константы для указания границ диапазона, можно также использовать и выражения, как в следующем примере:
 
-	for all i in (1..#a) : (@a[i] < 100)
+```yara
+for all i in (1..#a) : (@a[i] < 100)
+```
 
 В этом случае мы перебираем каждое вхождение строки `$a` (помните, что `#a` представляет количество вхождений `$a`). Это правило определяет, что каждое вхождение строки `$a` должно находиться в пределах первых 100 байт файла.
 
 Если вы хотите выразить, что только некоторые вхождения строки должны удовлетворять условию, то в данном случае применяется та же логика, что и в операторе `for...of`:
 
-	for any i in (1..#a) : (@a[i] < 100)
-	for 2 i in (1..#a) : (@a[i] < 100)
+```yara
+for any i in (1..#a) : (@a[i] < 100)
+for 2 i in (1..#a) : (@a[i] < 100)
+```
 
 Таким образом, синтаксис этого оператора:
 
-	for expression identifier in indexes : (boolean_expression)
+```yara
+for expression identifier in indexes : (boolean_expression)
+```
 
 <a name="ch_2.3.11">
 
@@ -954,23 +1000,25 @@ rule XorExample4
 
 При написании условий для правил можно также ссылаться на ранее определенное правило способом, напоминающим вызов функции в традиционных языках программирования. Таким образом, можно создавать правила, которые зависят от других. Например:
 
-	rule Rule1
-	{
-		strings:
-			$a = "dummy1"
+```yara
+rule Rule1
+{
+	strings:
+		$a = "dummy1"
 
-		condition:
-			$a
-	}
+condition:
+		$a
+}
 
-	rule Rule2
-	{
-		strings:
-			$a = "dummy2"
+rule Rule2
+{
+	strings:
+		$a = "dummy2"
 
-		condition:
-			$a and Rule1
-	}
+	condition:
+		$a and Rule1
+}
+```
 
 Как видно из примера, файл будет удовлетворять правилу `Rule2`, только если он содержит строку `“dummy2”` и удовлетворяет правилу `Rule1`. Обратите внимание, что правило необходимо определить строго до того, как оно будет вызвано.
 
@@ -990,11 +1038,13 @@ rule XorExample4
 
 Глобальные правила дают вам возможность налагать ограничения во всех ваших правилах сразу. Например, предположим, что вы хотите, чтобы все ваши правила игнорировали те файлы, которые превышают определенный размер. Вы могли бы править все правила, внося необходимые изменения в их условия, или просто написать глобальное правило, подобное этому:
 
-	global rule SizeLimit
-	{
-		condition:
-			filesize < 2MB
-	}
+```yara
+global rule SizeLimit
+{
+	condition:
+		filesize < 2MB
+}
+```
 
 Вы можете определить столько глобальных правил, сколько необходимо, они будут проверяться перед остальными правилами, которые, в свою очередь, будут проверяться только в том случае, если все глобальные правила будут выполнены.
 
@@ -1008,10 +1058,12 @@ rule XorExample4
 
 Чтобы объявить правило как приватное, просто добавьте ключевое слово `private` перед объявлением правила.
 
-	private rule PrivateRuleExample
-	{
-	...
-	}
+```yara
+private rule PrivateRuleExample
+{
+...
+}
+```
 
 Вы можете применить к правилу как модификатор `private`, так и `global`, в результате чего о выполнении глобального правила не будет сообщено YARA, но при этом оно будет выполнено.
 
@@ -1023,15 +1075,17 @@ rule XorExample4
 
 Еще одной полезной особенностью YARA является возможность добавления тегов в правила. Эти теги можно использовать позже для фильтрации вывода YARA и показывать вывод только тех правил, которые вас интересуют. В правило можно добавить любое количество тегов, которые объявляются после идентификатора правила, как показано ниже:
 
-	rule TagsExample1 : Foo Bar Baz
-	{
-	...
-	}
+```yara
+rule TagsExample1 : Foo Bar Baz
+{
+...
+}
 
-	rule TagsExample2 : Bar
-	{
-	...
-	}
+rule TagsExample2 : Bar
+{
+...
+}
+```
 
 Теги должны соответствовать одному и тому же лексическому соглашению для написания идентификаторов правил, поэтому допускаются только буквенно-цифровые символы и подчеркивания, а тег не может начинаться с цифры. Они также чувствительны к регистру.
 
@@ -1045,18 +1099,20 @@ rule XorExample4
 
 Помимо разделов, в которых определены строки и условия, правила могут также иметь раздел метаданных, где можно разместить дополнительную информацию о правиле. Раздел метаданных определяется ключевым словом `meta` и содержит пары идентификатор/значение, как в следующем примере:
 
-	rule MetadataExample	
-	{
-		meta:
-			my_identifier_1 = "Some string data"
-			my_identifier_2 = 24
-			my_identifier_3 = true
-		strings:
-			$my_text_string = "text here"
-			$my_hex_string = { E2 34 A1 C8 23 FB }
-		condition:
-			$my_text_string or $my_hex_string
-	}
+```yara
+rule MetadataExample	
+{
+	meta:
+		my_identifier_1 = "Some string data"
+		my_identifier_2 = 24
+		my_identifier_3 = true
+	strings:
+		$my_text_string = "text here"
+		$my_hex_string = { E2 34 A1 C8 23 FB }
+	condition:
+		$my_text_string or $my_hex_string
+}
+```
 
 Как видно из примера, за идентификаторами метаданных всегда следует знак равенства и присвоенное им значение. Присвоенные значения могут быть строками, числами, или одним из логических значений `true` или `false`. Обратите внимание, что пары идентификатор/значение, определенные в разделе метаданные, не могут использоваться в разделе `condition`, их единственной целью является хранение дополнительной информации о правиле.
 
@@ -1070,13 +1126,17 @@ rule XorExample4
 
 Первым шагом к использованию модуля является его импорт с помощью оператора `import`. Этот оператор должен быть помещен вне любого определения правила и сопровождаться именем модуля, заключенным в двойные кавычки:
 
-	import "pe"
-	import "cuckoo"
+```yara
+import "pe"
+import "cuckoo"
+```
 
 После импорта модуля вы можете использовать его функции или переменные, используя `<имя модуля>.` в качестве префикса к любой переменной или функции, экспортируемые модулем. Например:
 
-	pe.entry_point == 0x1000
-	cuckoo.http_request(/someregexp/)
+```yara
+pe.entry_point == 0x1000
+cuckoo.http_request(/someregexp/)
+```
 
 <a name="ch_2.6">
 
@@ -1086,20 +1146,24 @@ rule XorExample4
 
 Модули часто оставляют переменные в неопределенном состоянии, например, когда переменная не имеет смысла в текущем контексте (например, `pe.entry_point` при сканировании файла, отличного от PE-файла). YARA обрабатывает неопределенные значения таким образом, чтобы правило не потеряло свой смысл. Взгляните на это правило:
 
-	import "pe"
+```yara
+import "pe"
 
-	rule Test
-	{
-		strings:
-			$a = "some string"
+rule Test
+{
+	strings:
+		$a = "some string"
 
-		condition:
-			$a and pe.entry_point == 0x1000
-	}
+	condition:
+		$a and pe.entry_point == 0x1000
+}
+```
 
 Если сканируемый файл не является PE-файлом, вы не ожидаете, что это правило будет соответствовать файлу, даже если он содержит строку, потому что оба условия (наличие строки и правильное значение для точки входа) должны быть выполнены. Однако, если условие изменено на:
 
-	$a or pe.entry_point == 0x1000
+```yara	
+$a or pe.entry_point == 0x1000
+```
 
 В этом случае вы ожидаете, что правило будет соответствовать файлу, если файл содержит строку, даже если это не PE-файл. Именно так ведет себя Яра.
 
@@ -1113,42 +1177,50 @@ rule XorExample4
 
 Внешние переменные позволяют определить правила, которые зависят от значений, предоставляемых извне. Например, можно написать следующее правило:
 
-	rule ExternalVariableExample1
-	{
-		condition:
-			ext_var == 10
-	}
+```yara
+rule ExternalVariableExample1
+{
+	condition:
+		ext_var == 10
+}
+```
 
 В данном случае `ext_var` - это внешняя переменная, значение которой присваивается во время выполнения (см. опцию `-d` командной строки и параметр `externals` методов `compile` и `match` в `yara-python`). Внешние переменные могут быть целочисленными, строковыми или булевыми, их тип зависит от присвоенного им значения. Целочисленная переменная может заменить любую целочисленную константу в условии, а булевы переменные могут занять место булевых выражений. Например:
 
-	rule ExternalVariableExample2
-	{
-		condition:
-			bool_ext_var or filesize < int_ext_var
-	}
+```yara
+rule ExternalVariableExample2
+{
+	condition:
+		bool_ext_var or filesize < int_ext_var
+}
+```
 
 Внешние переменные строкового типа могут использоваться с операторами: `contains` и `matches`. Оператор `contains` возвращает `true`, если строка содержит указанную подстроку. Оператор `matches` возвращает `true`, если строка соответствует заданному регулярному выражению.
 
-	rule ExternalVariableExample3
-	{
-		condition:
-			string_ext_var contains "text"
-	}
+```yara
+rule ExternalVariableExample3
+{
+	condition:
+		string_ext_var contains "text"
+}
 
-	rule ExternalVariableExample4
-	{
-		condition:
-			string_ext_var matches /[a-z]+/
-	}
+rule ExternalVariableExample4
+{
+	condition:
+		string_ext_var matches /[a-z]+/
+}
+```
 
 Модификаторы регулярных выражений можно использовать вместе с оператором `matches`, например, если требуется, чтобы регулярное выражение из предыдущего примера не учитывало регистр, можно использовать `/[a-z]+/i`. Можно также использовать модификатор `s` для однострочного режима, в этом режиме точка соответствует всем символам, включая разрывы строк. При этом, оба модификатора могут использоваться одновременно, как в следующем примере:
 
-	rule ExternalVariableExample5
-	{
-		condition:
-			/* выбираем однострочный режим без учета регистра */
-			string_ext_var matches /[a-z]+/is
-	}
+```yara
+rule ExternalVariableExample5
+{
+	condition:
+		/* выбираем однострочный режим без учета регистра */
+		string_ext_var matches /[a-z]+/is
+}
+```
 
 Необходимо иметь в виду, что каждая внешняя переменная, используемая в правилах, должна быть определена во время выполнения либо с помощью опции `-d` командной строки, либо путем предоставления параметра `externals` соответствующему методу в `yara-python`.
 
@@ -1160,21 +1232,29 @@ rule XorExample4
 
 Чтобы обеспечить более гибкую организацию файлов правил, YARA предоставляет директиву `include`. Эта директива работает аналогично директиве препроцессора `#include` в программах C, которая вставляет содержимое указанного исходного файла в текущий файл во время компиляции. Следующий пример будет включать в себя содержимое файла *other.yar* в текущий файл:
 
-	include "other.yar"
+```yara
+include "other.yar"
+```
 
 Базовый путь при поиске файла в директиве `include` будет каталогом, в котором находится текущий файл. По этой причине файл *other.yar* в предыдущем примере должен находиться в той же директории текущего файла. Однако, вы также можете указать относительные пути:
 
-	include "./includes/other.yar"
-	include "../includes/other.yar"
+```yara
+include "./includes/other.yar"
+include "../includes/other.yar"
+```
 
 Или использовать абсолютные пути:
 
-	include "/home/plusvic/yara/includes/other.yar"
+```yara
+include "/home/plusvic/yara/includes/other.yar"
+```
 
 В Windows, при указании путей, принимается как прямой, так и обратный слэш, но при этом не забывайте указывать букву диска:
 
-	include "c:/yara/includes/other.yar"
-	include "c:\\yara\\includes\\other.yar"
+```yara
+include "c:/yara/includes/other.yar"
+include "c:\\yara\\includes\\other.yar"
+```
 
 <a name="ch_3">
 
@@ -1192,24 +1272,26 @@ rule XorExample4
 
 Модуль PE позволяет создавать более детализированные правила для PE-файлов с помощью атрибутов и функций формата PE-файла (детальную информацию о формате PE-файлов можно получить [здесь](https://docs.microsoft.com/ru-ru/windows/win32/debug/pe-format)). Этот модуль предоставляет большинство полей, присутствующих в заголовке PE и предоставляет функции, которые могут быть использованы для написания более выразительных и целевых правил. Рассмотрим несколько примеров:
 
-	import "pe"
-	rule single_section
-	{
-		condition:
-			pe.number_of_sections == 1
-	}
+```yara
+import "pe"
+rule single_section
+{
+	condition:
+		pe.number_of_sections == 1
+}
 
-	rule control_panel_applet
-	{
-		condition:
-			pe.exports("CPlApplet")
-	}
+rule control_panel_applet
+{
+	condition:
+		pe.exports("CPlApplet")
+}
 
-	rule is_dll
-	{
-		condition:
-			pe.characteristics & pe.DLL
-	}
+rule is_dll
+{
+	condition:
+		pe.characteristics & pe.DLL
+}
+```
 
 <a name="ch_3.1.1">
 
@@ -1648,10 +1730,11 @@ rule XorExample4
 
 Вот несколько примеров:
 
-	"/C=US/ST=Washington/L=Redmond/O=Microsoft Corporation/CN=Microsoft Code Signing PCA"
-	"/C=US/O=VeriSign, Inc./OU=VeriSign Trust Network/OU=Terms of use at https://www.verisign.com/rpa
-	(c)10/CN=VeriSign Class 3 Code Signing 2010 CA"
-	"/C=GB/ST=Greater Manchester/L=Salford/O=COMODO CA Limited/CN=COMODO Code Signing CA 2"
+```yara
+"/C=US/ST=Washington/L=Redmond/O=Microsoft Corporation/CN=Microsoft Code Signing PCA"
+"/C=US/O=VeriSign, Inc./OU=VeriSign Trust Network/OU=Terms of use at https://www.verisign.com/rpa(c)10/CN=VeriSign Class 3 Code Signing 2010 CA"
+"/C=GB/ST=Greater Manchester/L=Salford/O=COMODO CA Limited/CN=COMODO Code Signing CA 2"
+```
 
 - **subject** - Строка, содержащая информацию о субъекте.
 - **version** - Номер версии.
@@ -1660,7 +1743,9 @@ rule XorExample4
 
 Например:
 
-	"52:00:e5:aa:25:56:fc:1a:86:ed:96:c9:d4:4b:33:c7"
+```yara
+"52:00:e5:aa:25:56:fc:1a:86:ed:96:c9:d4:4b:33:c7"
+```
 
 - **not_before** - Временная метка в формате Unix, с которой начинается срок действия этой подписи.
 - **not_after** - Временная метка в формате Unix, на которой заканчивается срок действия этой подписи.
@@ -1668,11 +1753,15 @@ rule XorExample4
 
 Например, выражение:
 
-	pe.signatures[n].valid_on(timestamp)
+```yara
+pe.signatures[n].valid_on(timestamp)
+```
 
 эквивалентно следующему выражению:
 
-	timestamp >= pe.signatures[n].not_before and timestamp <= pe.signatures[n].not_after
+```yara
+timestamp >= pe.signatures[n].not_before and timestamp <= pe.signatures[n].not_after
+```
 ***
 **rich_signature**
 
@@ -1835,18 +1924,20 @@ rule XorExample4
 
 Модуль ELF очень похож на модуль PE, но предназначен для анализа файлов типа ELF. Этот модуль предоставляет большинство полей, присутствующих в заголовке ELF-файлов. Рассмотрим несколько примеров:
 
-	import "elf"
-	rule single_section
-	{
-		condition:
-			elf.number_of_sections == 1
-	}
+```yara
+import "elf"
+rule single_section
+{
+	condition:
+		elf.number_of_sections == 1
+}
 
-	rule elf_64
-	{
-		condition:
-			elf.machine == elf.EM_X86_64
-	}
+rule elf_64
+{
+	condition:
+		elf.machine == elf.EM_X86_64
+}
+```
 
 <a name="ch_3.2.1">
 
@@ -2051,50 +2142,60 @@ rule XorExample4
 ***
 Предположим, что вы заинтересованы в том, чтобы исполняемые файлы отправляли HTTP-запросы на `http://someone.doingevil.com`. В предыдущих версиях YARA вам приходилось довольствоваться только этим:
 
-	rule evil_doer
-	{
-		strings:
-			$evil_domain = "http://someone.doingevil.com"
-		condition:
-			$evil_domain
-	}
+```yara
+rule evil_doer
+{
+	strings:
+		$evil_domain = "http://someone.doingevil.com"
+	condition:
+		$evil_domain
+}
+```
 
 Проблема с этим правилом заключается в том, что доменное имя может содержаться в файле по вполне обоснованным причинам, не связанным с отправкой HTTP-запросов на `http://someone.doingevil.com`. Кроме того, вредоносный файл может содержать имя домена в зашифрованном или обфусцированном виде, в этом случае это правило будет полностью бесполезным.
 
 Но теперь с модулем `Cuckoo` вы можете взять отчет о поведении, сгенерированный для исполняемого файла вашей песочницей `Cuckoo`, передать его вместе с исполняемым файлом в YARA и написать правило, подобное этому:
 
-	import "cuckoo"
-	rule evil_doer
-	{
-		condition:
-			cuckoo.network.http_request(/http:\/\/someone\.doingevil\.com/)
-	}
+```yara
+import "cuckoo"
+rule evil_doer
+{
+	condition:
+		cuckoo.network.http_request(/http:\/\/someone\.doingevil\.com/)
+}
+```
 
 Конечно, вы можете смешать ваши связанные с поведением условия с обычными условиями на основе строк:
 
-	import "cuckoo"
-	rule evil_doer
-	{
-		strings:
-			$some_string = { 01 02 03 04 05 06 }
-		condition:
-			$some_string and
-			cuckoo.network.http_request(/http:\/\/someone\.doingevil\.com/)
-	}
+```yara
+import "cuckoo"
+rule evil_doer
+{
+	strings:
+		$some_string = { 01 02 03 04 05 06 }
+	condition:
+		$some_string and
+		cuckoo.network.http_request(/http:\/\/someone\.doingevil\.com/)
+}
+```
 
 Но как мы можем передать информацию о поведении модулю `Cuckoo`? В случае использования командной строки необходимо использовать опцию `-x` следующим образом:
 
-	$yara -x cuckoo=behavior_report_file rules_file pe_file
+```yara
+$yara -x cuckoo=behavior_report_file rules_file pe_file
+```
 
 `behavior_report_file` - это путь к файлу, содержащему файл поведения, сгенерированный песочницей `Cuckoo` в формате JSON.
 
 Если вы используете `yara-python`, вы должны передать отчет о поведении в аргументе `modules_data` для метода `match`:
 
-	import yara
-	rules = yara.compile('./rules_file')
-	report_file = open('./behavior_report_file')
-	report_data = report_file.read()
-	rules.match(pe_file, modules_data={'cuckoo': bytes(report_data)})
+```python
+import yara
+rules = yara.compile('./rules_file')
+report_file = open('./behavior_report_file')
+report_data = report_file.read()
+rules.match(pe_file, modules_data={'cuckoo': bytes(report_data)})
+```
 
 <a name="ch_3.3.1">
 
@@ -2241,11 +2342,15 @@ Example: `hash.md5(“dummy”) == “275876e34cf609db118f3d84b799a790”`
 ***
 **Важно!** Где отмечено, функции модуля возвращают числа с плавающей запятой. YARA может преобразовывать целые числа в числа с плавающей запятой во время большинства операций. Пример, приведенный ниже автоматически преобразует 7 в 7.0, потому что тип возвращаемой функции энтропии - значение с плавающей запятой:
 
-	math.entropy(0, filesize) >= 7
+```yara
+math.entropy(0, filesize) >= 7
+```
 
 Единственным исключением является случай, когда функции требуется число с плавающей запятой в качестве аргумента. Например, такая запись приведет к синтаксической ошибке, поскольку аргументы должны быть числами с плавающей запятой:
 
-	math.in_range(2, 1, 3)
+```yara
+math.in_range(2, 1, 3)
+```
 ***
 **entropy(offset, size)**
 
@@ -2329,19 +2434,21 @@ Example: `hash.md5(“dummy”) == “275876e34cf609db118f3d84b799a790”`
 
 Модуль `dotnet` позволяет создавать более детализированные правила для файлов .NET с помощью атрибутов и функций формата файлов .NET. Например:
 
-	import "dotnet"
-	rule not_exactly_five_streams
-	{
-		condition:
-			dotnet.number_of_streams != 5
-	}
+```yara
+import "dotnet"
+rule not_exactly_five_streams
+{
+	condition:
+		dotnet.number_of_streams != 5
+}
 
-	rule blop_stream
-	{
-		condition:
-			for any i in (0..dotnet.number_of_streams - 1):
-				(dotnet.streams[i].name == "#Blop")
-	}
+rule blop_stream
+{
+	condition:
+		for any i in (0..dotnet.number_of_streams - 1):
+			(dotnet.streams[i].name == "#Blop")
+}
+```
 
 <a name="ch_3.7.1">
 
@@ -2381,7 +2488,7 @@ Example: `dotnet.module_name == “axs”`
 ***
 **guids**
 
-Начинающийся с нуля массив строк, по одной для каждого GUID. Доступ к отдельным объектам массива можно получить с помощью оператора `[].
+Начинающийся с нуля массив строк, по одной для каждого GUID. Доступ к отдельным объектам массива можно получить с помощью оператора `[]`.
 
 Пример: `dotnet.guids[0] == “99c08ffd-f378-a891-10ab-c02fe11be6ef”`
 ***
@@ -2403,7 +2510,7 @@ Example: `dotnet.module_name == “axs”`
 
 Объект, содержащий информацию о сборке .NET:
 
-- **version** - Объект с целочисленными значениями, представляющими информацию о версии для этой сборки. Атрибуты: `major minor build_number revision_number`
+- **version** - Объект с целочисленными значениями, представляющими информацию о версии для этой сборки. Атрибуты: `major` `minor` `build_number` `revision_number`
 - **name** - Строка, содержащая имя сборки.
 - **culture** - Строка, содержащая `language/country/region` данной сборки.
 
@@ -2429,7 +2536,7 @@ Example: `dotnet.modulerefs[0] == “kernel32”`
 
 Объект для справочной информации сборки .NET.
 
-- **version** -Объект с целочисленными значениями, представляющими информацию о версии для этой сборки. Атрибуты: `major minor build_number revision_number`.
+- **version** -Объект с целочисленными значениями, представляющими информацию о версии для этой сборки. Атрибуты: `major` `minor` `build_number` `revision_number`.
 - **name** - Строка, содержащая имя сборки.
 - **public_key_or_token** - Строка, содержащая открытый ключ или токен, который идентифицирует автора этой сборки.
 ***
@@ -2511,49 +2618,59 @@ int module_unload(YR_OBJECT* module_object)
 
 Начнем разбирать исходный код, чтобы вы могли понять каждую деталь. Первая строка в коде:
 
-	#include <yara/modules.h>
+```C
+#include <yara/modules.h>
+```
 
 В заголовочном файле `modules.h` находятся определения  API для модулей YARA, поэтому эта директива `include` необходима во всех ваших модулях. Вторая строка:
 
-	#define MODULE_NAME demo
+```C
+#define MODULE_NAME demo
+```
 
 Это, определение имени вашего модуля. Для каждого модуля необходимо определить свое имя в начале исходного кода. Имена модулей должны быть уникальными среди модулей, встроенных в YARA.
 
 Затем следует раздел объявлений функций и данных:
 
-	begin_declarations;
+```C
+begin_declarations;
 
-		declare_string("greeting");
+	declare_string("greeting");
 
-	end_declarations;
+end_declarations;
+```
 
 Здесь модуль объявляет функции и структуры данных, которые будут доступны для ваших правил YARA. В этом случае мы объявляем только строковую переменную с именем `greeting`. Более подробно мы обсудим эти вопросы в разделе  4.2.
 
 После раздела объявлений, показанного выше, идет пара функций:
 
-	int module_initialize(YR_MODULE* module)
-	{
-		eturn ERROR_SUCCESS;
-	}
+```C
+int module_initialize(YR_MODULE* module)
+{
+	eturn ERROR_SUCCESS;
+}
 	
-	int module_finalize(YR_MODULE* module)
-	{
-		return ERROR_SUCCESS;
-	}
+int module_finalize(YR_MODULE* module)
+{
+	return ERROR_SUCCESS;
+}
+```
 
 Функция `module_initialize` вызывается во время инициализации YARA, в то время как функция `module_finalize` вызывается при завершении YARA. Эти функции позволяют инициализировать и завершить любую глобальную структуру данных, использование которой требуется для работы модуля.
 
 Затем идет функция `module_load`:
 
-	int module_load(
-		YR_SCAN_CONTEXT* context,
-		YR_OBJECT* module_object,
-		void* module_data,
-		size_t module_data_size)
-	{
-		set_string("Hello World!", module_object, "greeting");
-		return ERROR_SUCCESS;
-	}
+```C
+int module_load(
+	YR_SCAN_CONTEXT* context,
+	YR_OBJECT* module_object,
+	void* module_data,
+	size_t module_data_size)
+{
+	set_string("Hello World!", module_object, "greeting");
+	return ERROR_SUCCESS;
+}
+```
 
 Эта функция вызывается один раз для каждого сканируемого файла, но только если модуль импортируется в какое-либо правило с помощью директивы `import`. Функция `module_load` позволяет модулю проверять сканируемый файл, разбирать и анализировать его, а затем заполнять структуры данных, определенные в разделе объявлений.
 
@@ -2561,10 +2678,12 @@ int module_unload(YR_OBJECT* module_object)
 
 И, наконец, у нас есть функция `module_unload`:
 
-	int module_unload(YR_OBJECT* module_object)
-	{
-		return ERROR_SUCCESS;
-	}
+```C
+int module_unload(YR_OBJECT* module_object)
+{
+	return ERROR_SUCCESS;
+}
+```
 
 Для каждого вызова `module_load` существует соответствующий вызов `module_unload`. Эта функция позволяет модулю освободить любой ресурс, выделенный во время `module_load`. В нашем случае ничего не нужно освобождать, поэтому функция просто возвращает `ERROR_SUCCESS`. И `module_load` и `module_unload` должны возвращать `ERROR_SUCCESS`, чтобы указать, что все прошло нормально. Если возвращается другое значение, сканирование будет прервано и пользователю будет сообщено об ошибке.
 
@@ -2612,12 +2731,14 @@ int module_unload(YR_OBJECT* module_object)
 
 Теперь вы можете создать такое правило:
 
-	import "demo"
-	rule HelloWorld
-	{
-		condition:
-			demo.greeting == "Hello World!"
-	}
+```yara
+import "demo"
+rule HelloWorld
+{
+	condition:
+		demo.greeting == "Hello World!"
+}
+```
 
 Любой файл, отсканированный с помощью этого правила, будет ему соответствовать, поскольку условие `demo.greeting == "Hello World!"` всегда `true`.
 
@@ -2629,11 +2750,13 @@ int module_unload(YR_OBJECT* module_object)
 
 В разделе объявлений объявляются переменные, структуры и функции, которые будут доступны для правил YARA. Каждый модуль должен содержать это раздел, который выглядит следующим образом:
 
-	begin_declarations;
+```C
+begin_declarations;
 
-		<your declarations here>
+	<your declarations here>
 
-	end_declarations;
+end_declarations;
+```
 
 <a name="ch_4.2.1">
 
@@ -2643,21 +2766,25 @@ int module_unload(YR_OBJECT* module_object)
 
 В разделе объявлений можно использовать `declare_string(<имя переменной>)`, `declare_integer(<имя переменной>)` и `declare_float(<имя переменной>)` для объявления строковых, целочисленных переменных или переменных с плавающей запятой соответственно. Например:
 
-	begin_declarations;
+```C
+begin_declarations;
 
-		declare_integer("foo");
-		declare_string("bar");
-		declare_float("baz");
+	declare_integer("foo");
+	declare_string("bar");
+	declare_float("baz");
 
-	end_declarations;
+end_declarations;
+```
 ***
 **Примечание:** переменные с плавающей запятой требуют YARA версии 3.3.0 или более поздней.
 ***
 Имена переменных могут содержать такие символы как; буквы, цифры и символы подчеркивания. Эти переменные могут быть использованы позже в ваших правилах в любом месте, где ожидается число или строка. Предположим, что имя вашего модуля `mymodule`, тогда переменные могут быть использованы следующим образом:
 
-	mymodule.foo > 5
+```yara
+mymodule.foo > 5
 
-	mymodule.bar matches /someregexp/
+mymodule.bar matches /someregexp/
+```
 
 <a name="ch_4.2.2">
 
@@ -2667,43 +2794,47 @@ int module_unload(YR_OBJECT* module_object)
 
 Ваши объявления могут быть организованы более структурированным образом:
 
-	begin_declarations;
+```C
+begin_declarations;
+
+	declare_integer("foo");
+	declare_string("bar");
+	declare_float("baz");
+
+	begin_struct("some_structure");
+
+		declare_integer("foo");
+
+		begin_struct("nested_structure");
+
+			declare_integer("bar");
+
+		end_struct("nested_structure");
+
+	end_struct("some_structure");
+
+	begin_struct("another_structure");
 
 		declare_integer("foo");
 		declare_string("bar");
-		declare_float("baz");
+		declare_string("baz");
+		declare_float("tux");
 
-		begin_struct("some_structure");
+	end_struct("another_structure");
 
-			declare_integer("foo");
-
-			begin_struct("nested_structure");
-
-				declare_integer("bar");
-
-			end_struct("nested_structure");
-
-		end_struct("some_structure");
-
-		begin_struct("another_structure");
-
-			declare_integer("foo");
-			declare_string("bar");
-			declare_string("baz");
-			declare_float("tux");
-
-		end_struct("another_structure");
-
-	end_declarations;
+end_declarations;
+```
 
 В этом примере мы используем `begin_struct(<имя структуры>)` и `end_struct (<имя структуры>)` для разграничения двух структур `some_structure` и `another_structure`. В разделители структуры можно поместить любые другие объявления, включая другое объявление структуры. Также обратите внимание, что члены разных структур могут иметь одно и то же имя, но члены одной структуры должны иметь уникальные имена.
 
 Обращение к этим переменным из ваших правил будет выглядеть следующим образом:
 
-	mymodule.foo
-	mymodule.some_structure.foo
-	mymodule.some_structure.nested_structure.bar
-	mymodule.another_structure.baz
+```yara
+mymodule.foo
+mymodule.some_structure.foo
+mymodule.some_structure.nested_structure.bar
+mymodule.another_structure.baz
+```
 
 <a name="ch_4.2.3">
 
