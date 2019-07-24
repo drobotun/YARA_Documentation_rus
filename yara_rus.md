@@ -1826,6 +1826,7 @@ pe.signatures[n].valid_on(timestamp)
 ```yara
 timestamp >= pe.signatures[n].not_before and timestamp <= pe.signatures[n].not_after
 ```
+
 ***
 **rich_signature**
 
@@ -1857,7 +1858,12 @@ pe.rich_signature.toolid(222)
 
 Функция, возвращающая `true`, если PE-файл экспортирует функцию `function_name` или `false` в противном случае.
 
-Пример: `pe.exports(“CPlApplet”)`
+Пример:
+
+```yara
+pe.exports(“CPlApplet”)
+```
+
 ***
 **exports(ordinal)**
 
