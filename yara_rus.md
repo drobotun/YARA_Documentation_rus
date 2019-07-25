@@ -4379,6 +4379,8 @@ CALLBACK_ERROR
 
 </a>
 
+**YR_COMPILER**
+
 Структура данных, представляющая компилятор YARA.
 ***
 **YR_MATCH**
