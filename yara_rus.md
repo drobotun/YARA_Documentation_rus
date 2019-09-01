@@ -4379,7 +4379,7 @@ CALLBACK_ERROR
 
 </a>
 
-**YR_COMPILER**
+<a name="YR_COMPILER">**YR_COMPILER**</a>
 
 Структура данных, представляющая компилятор YARA.
 ***
