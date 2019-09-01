@@ -4647,7 +4647,7 @@ const char* tag;
 
 r_rule_tags_foreach(rule, tag)
 {
-	..do сделать что-нибудь с tag
+	do сделать что-нибудь с tag
 }
 ```
 ***
@@ -4662,7 +4662,7 @@ YR_META* meta;
 
 yr_rule_metas_foreach(rule, meta)
 {
-	..do сделать что-нибудь с meta
+	do сделать что-нибудь с meta
 }
 ```
 ***
