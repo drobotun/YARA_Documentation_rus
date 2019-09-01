@@ -4434,11 +4434,11 @@ CALLBACK_ERROR
 
 - [YR_NAMESPACE*](#yr_namespace) **ns** - Указатель на структуру `YR_NAMESPACE`.
 ***
-**YR_RULES**
+<a name="YR_RULES">**YR_RULES**</a>
 
 Структура данных, представляющая набор правил.
 ***
-**YR_STREAM**
+<a name="YR_STREAM">**YR_STREAM**</a>
 
 Добавлено в версии 3.4.0.
 
@@ -4468,7 +4468,207 @@ CALLBACK_ERROR
 
 </a>
 
-Перевод раздела не завершен
+int **yr_initialize**(void)
+
+Инициализация библиотеки. Должна быть вызвана главным потоком перед использованием любой другой функции. Возвращает [ERROR_SUCCESS](#ERROR_SUCCESS) в случае успеха, либо другой код ошибки в случае неудачи. Список возможных кодов возврата варьируется в зависимости от модулей, скомпилированных в YARA.
+***
+int **yr_finalize**(void)
+
+Завершает работу библиотеки. Должна вызываться основным потоком для освобождения любого ресурса, выделенного библиотекой. Возвращает [ERROR_SUCCESS](#ERROR_SUCCESS) в случае успеха, либо другой код ошибки в случае неудачи. Список возможных кодов возврата зависит от модулей, скомпилированных в YARA.
+***
+void **yr_finalize_thread**(void)
+
+Устаревшая начиная с версии 3.8.0 функция.
+
+Любой поток, использующий библиотеку, кроме основного потока, должен вызывать эту функцию, при завершении использования библиотеки. Начиная с версии 3.8.0, вызов этой функции больше не требуется.
+***
+int **yr_compiler_create**([YR_COMPILER](#YR_COMPILER)** `compiler`)
+
+Создает компилятор YARA. В качестве параметра передается адрес указателя на [YR_COMPILER](#YR_COMPILER), при этом функция установит указатель на вновь выделенный компилятор. Возвращает один из следующих кодов ошибок:
+
+- [ERROR_SUCCESS](#ERROR_SUCCESS)
+- [ERROR_INSUFFICIENT_MEMORY](#ERROR_INSUFFICIENT_MEMORY)
+***
+void **yr_compiler_destroy**([YR_COMPILER](#YR_COMPILER)* `compiler`)
+
+Уничтожает компилятор YARA.
+***
+void **yr_compiler_set_callback**([YR_COMPILER](#YR_COMPILER)* `compiler`, YR_COMPILER_CALLBACK_FUNC `callback`, void* `user_data`)
+
+Изменено начиная с версии 3.3.0.
+
+Устанавливает обратный вызов для получения информации об ошибке и предупреждении. Указатель на `user_data` передается в функцию обратного вызова.
+***
+void **yr_compiler_set_include_callback**([YR_COMPILER](#YR_COMPILER)* `compiler`, YR_COMPILER_INCLUDE_CALLBACK_FUNC `callback`, YR_COMPILER_INCLUDE_FREE_FUNC `include_ free`, void* `user_data`)
+
+Устанавливает обратный вызов для предоставления правил из пользовательского источника при вызове директивы `include`. Указатель `user_data` остается нетронутым и передается назад в функцию обратного вызова и в свободную функцию. Как только результат обратного вызова больше не нужен, будет вызвана функция `include_free`. Если память не должна быть освобождена, `include_free` может быть присвоено значение `null`. Если обратный вызов имеет значение `NULL`, поддержка директив `include` отключена.
+***
+int **yr_compiler_add_file**([YR_COMPILER](#YR_COMPILER)* `compiler`, FILE* `file`, const char* `namespace`, const char* `file_name`)
+
+Компилирует правила из файла `file`. Правила помещаются в пространство имен `namespace`, если `namespace` равно `NULL`, они будут помещены в пространство имен по умолчанию. `file_name` - это имя файла для создания отчетов об ошибках, которое может иметь значение `NULL`. Возвращает количество ошибок, обнаруженных во время компиляции.
+***
+int **yr_compiler_add_fd**([YR_COMPILER](#YR_COMPILER)* `compiler`, YR_FILE_DESCRIPTOR `rules_fd`, const char* `namespace`, const char* `file_name`)
+
+Добавлено в версии 3.6.0.
+
+Компилирует правила из файлового дескриптора `rules_fd`. Правила помещаются в пространство имен `namespace`, если `namespace` равно `NULL`, они будут помещены в пространство имен по умолчанию. `file_name` - это имя файла для создания отчетов об ошибках, которое может иметь значение `NULL`. Возвращает количество ошибок, обнаруженных во время компиляции.
+***
+int **yr_compiler_add_string**([YR_COMPILER](#YR_COMPILER)* `compiler`, const char* `string`, const char* `namespace`)
+
+Компилирует правила из строки `string`. Правила помещаются в пространство имен `namespace`, если `namespace` равно `NULL`, они будут помещены в пространство имен по умолчанию. `file_name` - это имя файла для создания отчетов об ошибках, которое может иметь значение `NULL`. Возвращает количество ошибок, обнаруженных во время компиляции.
+***
+int <a name="yr_compiler_get_rules">**yr_compiler_get_rules**</a>([YR_COMPILER](#YR_COMPILER)* `compiler`, [YR_RULES](#YR_RULES)** `rules`)
+
+Получает скомпилированные правила из компилятора. Возвращает один из следующих кодов ошибок:
+
+- [ERROR_SUCCESS](#ERROR_SUCCESS)
+- [ERROR_INSUFFICIENT_MEMORY](#ERROR_INSUFFICIENT_MEMORY)
+***
+int **yr_compiler_define_integer_variable**([YR_COMPILER](#YR_COMPILER)* `compiler`, const char* `identifier`, int64_t `value`)
+
+Определяет внешнюю целочисленную переменную.
+***
+int **yr_compiler_define_float_variable**([YR_COMPILER](#YR_COMPILER)* `compiler`, const char* `identifier`, double `value`)
+
+Определяет внешнюю переменную с плавающей точкой.
+***
+int **yr_compiler_define_boolean_variable**([YR_COMPILER](#YR_COMPILER)* `compiler`, const char* `identifier`, int `value`)
+
+Определяет внешнюю переменную типа `boolean`.
+***
+int **yr_compiler_define_string_variable**([YR_COMPILER](#YR_COMPILER)* `compiler`, const char* `identifier`, const char* `value`)
+
+Определяет внешнюю строковую переменную.
+***
+int **yr_rules_define_integer_variable**([YR_RULES](#YR_RULES)* `rules`, const char* `identifier`, int64_t `value`)
+
+Определяет внешнюю целочисленную переменную.
+***
+int **yr_rules_define_boolean_variable**([YR_RULES](#YR_RULES)* `rules`, const char* `identifier`, int `value`)
+
+Определяет внешнюю переменную типа `boolean`.
+***
+int **yr_rules_define_float_variable**([YR_RULES](#YR_RULES)* `rules`, const char* `identifier`, double `value`)
+
+Определяет внешнюю переменную с плавающей точкой.
+***
+int **yr_rules_define_string_variable**([YR_RULES](#YR_RULES)* `rules`, const char* `identifier`, const char* `value`)
+
+Определяет внешнюю строковую переменную.
+***
+void **yr_rules_destroy**([YR_RULES](#YR_RULES)* `rules`)
+
+Уничтожает скомпилированные правила .
+***
+int **yr_rules_save**([YR_RULES](#YR_RULES)* `rules`, const char* `filename`)
+
+Сохраняет скомпилированные правила в файл, указанный в `filename`. Можно сохранить только правила, полученные с помощью [`yr_compiler_get_rules()`](#yr_compiler_get_rules). Правила, полученные с помощью [`yr_rules_load()`](#yr_rules_load) или [`yr_rules_load_stream()`](#yr_rules_load_stream) не могут быть сохранены. Возвращает один из следующих кодов ошибок:
+
+- [ERROR_SUCCESS](#ERROR_SUCCESS)
+- [ERROR_COULD_NOT_OPEN_FILE](#ERROR_COULD_NOT_OPEN_FILE)
+***
+int <a name="yr_rules_save_stream">**yr_rules_save_stream**</a>([YR_RULES](#YR_RULES)* `rules`, [YR_STREAM](#YR_STREAM)* `stream`)
+
+Добавлено в версии 3.4.0.
+
+Сохраняет скомпилированные правила `rules` в `stream`. Можно сохранить только правила, полученные с помощью [`yr_compiler_get_rules()`](#yr_compiler_get_rules). Правила, полученные с помощью [`yr_rules_load()`](#yr_rules_load) или [`yr_rules_load_stream()`](#yr_rules_load_stream) не могут быть сохранены. Возвращает один из следующих кодов ошибок:
+
+- [ERROR_SUCCESS](#ERROR_SUCCESS)
+***
+int <a name="yr_rules_load">**yr_rules_load**</a>(const char* `filename`, [YR_RULES](#YR_RULES)** `rules`)
+
+Загружает скомпилированные правила `rules` из файла, указанного в параметре `filename`. Возвращает один из следующих кодов ошибок:
+
+- [ERROR_SUCCESS](#ERROR_SUCCESS)
+- [ERROR_INSUFFICIENT_MEMORY](#ERROR_INSUFFICIENT_MEMORY)
+- [ERROR_COULD_NOT_OPEN_FILE](#ERROR_COULD_NOT_OPEN_FILE)
+- [ERROR_INVALID_FILE](#ERROR_INVALID_FILE)
+- [ERROR_CORRUPT_FILE](#ERROR_CORRUPT_FILE)
+- [ERROR_UNSUPPORTED_FILE_VERSION](#ERROR_UNSUPPORTED_FILE_VERSION)
+***
+int <a name="yr_rules_load_stream">**yr_rules_load_stream**</a>([YR_STREAM](#YR_STREAM)* `stream`, [YR_RULES](#YR_RULES)** `rules`)
+
+Добавлено в версии 3.4.0.
+
+Загружает скомпилированные правила `rules` из потока `stream`. Правила, загруженные таким образом, не могут быть сохранены обратно с помощью [`yr_rules_save_stream()`](#yr_rules_save_stream). Возвращает один из следующих кодов ошибок:
+
+- [ERROR_SUCCESS](#ERROR_SUCCESS)
+- [ERROR_INSUFFICIENT_MEMORY](#ERROR_INSUFFICIENT_MEMORY)
+- [ERROR_INVALID_FILE](#ERROR_INVALID_FILE)
+- [ERROR_CORRUPT_FILE](#ERROR_CORRUPT_FILE)
+- [ERROR_UNSUPPORTED_FILE_VERSION](#ERROR_UNSUPPORTED_FILE_VERSION)
+***
+int **yr_rules_scan_mem**([YR_RULES](#YR_RULES)* `rules`, const uint8_t* `buffer`, size_t `buffer_size`, int `flags`, YR_CALLBACK_FUNC `callback`, void* `user_data`, int `timeout`)
+
+Сканирование участка памяти `buffer`. 
+Возвращает один из следующих кодов ошибок:
+
+- [ERROR_SUCCESS](#ERROR_SUCCESS)
+- [ERROR_INSUFFICIENT_MEMORY](#ERROR_INSUFFICIENT_MEMORY)
+- [ERROR_TOO_MANY_SCAN_THREADS](#ERROR_TOO_MANY_SCAN_THREADS)
+- [ERROR_SCAN_TIMEOUT](#ERROR_SCAN_TIMEOUT)
+- [ERROR_CALLBACK_ERROR](#ERROR_CALLBACK_ERROR)
+- [ERROR_TOO_MANY_MATCHES](#ERROR_TOO_MANY_MATCHES)
+***
+int **yr_rules_scan_file**([YR_RULES](#YR_RULES)* `rules`, const char* `filename`, int `flags`, YR_CALLBACK_FUNC `callback`, void* `user_data`, int `timeout`)
+
+Сканирование файла. Возвращает один из следующих кодов ошибок:
+
+- [ERROR_SUCCESS](#ERROR_SUCCESS)
+- [ERROR_INSUFFICIENT_MEMORY](#ERROR_INSUFFICIENT_MEMORY)
+- [ERROR_COULD_NOT_MAP_FILE](#ERROR_COULD_NOT_MAP_FILE)
+- [ERROR_ZERO_LENGTH_FILE](#ERROR_ZERO_LENGTH_FILE)
+- [ERROR_TOO_MANY_SCAN_THREADS](#ERROR_TOO_MANY_SCAN_THREADS)
+- [ERROR_SCAN_TIMEOUT](#ERROR_SCAN_TIMEOUT)
+- [ERROR_CALLBACK_ERROR](#ERROR_CALLBACK_ERROR)
+- [ERROR_TOO_MANY_MATCHES](#ERROR_TOO_MANY_MATCHES)
+***
+int **yr_rules_scan_fd**([YR_RULES](#YR_RULES)* `rules`, YR_FILE_DESCRIPTOR `fd`, int `flags`, YR_CALLBACK_FUNC `callback`, void* `user_data`, int `timeout`)
+
+Сканирование файла по его дескриптору . В системах POSIX `YR_FILE_DESCRIPTOR ` - это `int`, возвращаемый функцией `open ()`. В Windows `YR_FILE_DESCRIPTOR` - это `HANDLE`, возвращаемый `CreateFile ()`. Возвращает один из следующих кодов ошибок:
+
+- [ERROR_SUCCESS](#ERROR_SUCCESS)
+- [ERROR_INSUFFICIENT_MEMORY](#ERROR_INSUFFICIENT_MEMORY)
+- [ERROR_COULD_NOT_MAP_FILE](#ERROR_COULD_NOT_MAP_FILE)
+- [ERROR_ZERO_LENGTH_FILE](#ERROR_ZERO_LENGTH_FILE)
+- [ERROR_TOO_MANY_SCAN_THREADS](#ERROR_TOO_MANY_SCAN_THREADS)
+- [ERROR_SCAN_TIMEOUT](#ERROR_SCAN_TIMEOUT)
+- [ERROR_CALLBACK_ERROR](#ERROR_CALLBACK_ERROR)
+- [ERROR_TOO_MANY_MATCHES](#ERROR_TOO_MANY_MATCHES)
+***
+**yr_rule_tags_foreach**(rule, tag)
+
+Повторение по тегам данного правила, выполняя блок кода, который следует каждый раз, с другим значением для `tag` типа` const char * `. Например:
+
+```C
+const char* tag;
+
+/* rule - объект YR_RULE */
+
+r_rule_tags_foreach(rule, tag)
+{
+	..do сделать что-нибудь с tag
+}
+```
+***
+**yr_rule_metas_foreach**(rule, meta)
+
+Выполняет повторение по структурам [`YR_META*`](#yr_meta), связанным с данным правилом, в котором выполняется блок кода, который каждый раз следует с другим значением для `meta`. Например:
+
+```C
+YR_META* meta;
+
+/* rule - объект YR_RULE */
+
+yr_rule_metas_foreach(rule, meta)
+{
+	..do сделать что-нибудь с meta
+}
+```
+***
+
+
+
 
 <a name="ch_7.6.3">
 
@@ -4476,15 +4676,15 @@ CALLBACK_ERROR
 
 </a>
 
-**ERROR_SUCCESS**
+<a name="ERROR_SUCCESS">**ERROR_SUCCESS**</a>
 
 Все прошло нормально.
 
-**ERROR_INSUFFICIENT_MEMORY**
+<a name="ERROR_INSUFFICIENT_MEMORY">**ERROR_INSUFFICIENT_MEMORY**</a>
 
 Недостаточно памяти для завершения операции.
 
-**ERROR_COULD_NOT_OPEN_FILE**
+<a name="ERROR_COULD_NOT_OPEN_FILE">**ERROR_COULD_NOT_OPEN_FILE**</a>
 
 Файл не может быть открыт.
 
@@ -4496,31 +4696,32 @@ CALLBACK_ERROR
 
 Длина файла равна нулю.
 
-**ERROR_INVALID_FILE**
+<a name="ERROR_INVALID_FILE">**ERROR_INVALID_FILE**</a>
 
 Файл не является допустимым файлом правил.
 
-**ERROR_CORRUPT_FILE**
+<a name="ERROR_CORRUPT_FILE">**ERROR_CORRUPT_FILE**</a>
 
 Файл правил поврежден.
 
-**ERROR_UNSUPPORTED_FILE_VERSION**
+<a name="ERROR_UNSUPPORTED_FILE_VERSION">**ERROR_UNSUPPORTED_FILE_VERSION**</a>
 
 Файл сгенерирован другой версией YARA и не может быть загружен этой версией.
 
-**ERROR_TOO_MANY_SCAN_THREADS**
+<a name="ERROR_TOO_MANY_SCAN_THREADS">**ERROR_TOO_MANY_SCAN_THREADS**</a>
 
 Слишком много потоков пытаются использовать один и тот же объект `YR_RULES` одновременно. Предел определяется `YR_MAX_THREADS` в `./include/yara/limits.h`.
 
-**ERROR_SCAN_TIMEOUT**
+<a name="ERROR_SCAN_TIMEOUT">**ERROR_SCAN_TIMEOUT**</a>
 
 Время сканирования истекло.
 
-**ERROR_CALLBACK_ERROR**
+<a name="ERROR_CALLBACK_ERROR">**ERROR_CALLBACK_ERROR**</a>
 
 Функция обратного вызова вернула ошибку.
 
-**ERROR_TOO_MANY_MATCHES**
+<a name="ERROR_TOO_MANY_MATCHES">**ERROR_TOO_MANY_MATCHES**</a>
 
 Слишком много совпадений для какой-либо строки в правилах. Обычно это происходит, когда правила содержат очень короткие или очень распространенные строки, такие как 01 02 или FF FF FF FF. Предел определяется `YR_MAX_STRING_MATCHES` в `./include/yara/limits.h`.
+
 
