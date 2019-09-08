@@ -4828,47 +4828,47 @@ int **yr_scanner_scan_fd**(YR_SCANNER* scanner, YR_FILE_DESCRIPTOR fd)
 <a name="ERROR_SUCCESS">**ERROR_SUCCESS**</a>
 
 Все прошло нормально.
-
+***
 <a name="ERROR_INSUFFICIENT_MEMORY">**ERROR_INSUFFICIENT_MEMORY**</a>
 
 Недостаточно памяти для завершения операции.
-
+***
 <a name="ERROR_COULD_NOT_OPEN_FILE">**ERROR_COULD_NOT_OPEN_FILE**</a>
 
 Файл не может быть открыт.
-
+***
 **ERROR_COULD_NOT_MAP_FILE**
 
 Файл не может быть отображен в память.
-
+***
 **ERROR_ZERO_LENGTH_FILE**
 
 Длина файла равна нулю.
-
+***
 <a name="ERROR_INVALID_FILE">**ERROR_INVALID_FILE**</a>
 
 Файл не является допустимым файлом правил.
-
+***
 <a name="ERROR_CORRUPT_FILE">**ERROR_CORRUPT_FILE**</a>
 
 Файл правил поврежден.
-
+***
 <a name="ERROR_UNSUPPORTED_FILE_VERSION">**ERROR_UNSUPPORTED_FILE_VERSION**</a>
 
 Файл сгенерирован другой версией YARA и не может быть загружен этой версией.
-
+***
 <a name="ERROR_TOO_MANY_SCAN_THREADS">**ERROR_TOO_MANY_SCAN_THREADS**</a>
 
 Слишком много потоков пытаются использовать один и тот же объект `YR_RULES` одновременно. Предел определяется `YR_MAX_THREADS` в `./include/yara/limits.h`.
-
+***
 <a name="ERROR_SCAN_TIMEOUT">**ERROR_SCAN_TIMEOUT**</a>
 
 Время сканирования истекло.
-
+***
 <a name="ERROR_CALLBACK_ERROR">**ERROR_CALLBACK_ERROR**</a>
 
 Функция обратного вызова вернула ошибку.
-
+***
 <a name="ERROR_TOO_MANY_MATCHES">**ERROR_TOO_MANY_MATCHES**</a>
 
 Слишком много совпадений для какой-либо строки в правилах. Обычно это происходит, когда правила содержат очень короткие или очень распространенные строки, такие как 01 02 или FF FF FF FF. Предел определяется `YR_MAX_STRING_MATCHES` в `./include/yara/limits.h`.
