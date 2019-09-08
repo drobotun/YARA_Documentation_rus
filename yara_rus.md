@@ -4666,9 +4666,158 @@ yr_rule_metas_foreach(rule, meta)
 }
 ```
 ***
+**yr_rule_strings_foreach**(rule, string)
 
+Выполняет повторение по структуре [`YR_STRING*`](#yr_string), связанной с данным правилом, в котором выполняется блок кода, который каждый раз следует с другим значением для `string`. Например:
 
+```C
+YR_STRING* string;
 
+/* rule - объект YR_RULE */
+
+yr_rule_strings_foreach(rule, string)
+{
+	.. do сделать что-нибудь с string
+}
+```
+***
+**yr_string_matches_foreach**(string, match)
+
+Выполняет повторение по структуре [`YR_MATCH*`](#yr_match), связанной с данным правилом, в котором выполняется блок кода, который каждый раз следует с другим значением для `match`. Например:
+
+```C
+YR_MATCH* match;
+
+/* string - объект YR_STRING */
+
+yr_string_matches_foreach(string, match)
+{
+	.. do сделать что-нибудь с match
+}
+```
+***
+**yr_rules_foreach**(rules, rule)
+
+Повторение по каждому [`YR_RULE`](#YR_RULE) в объекте [`YR_RULES`](#YR_RULES), выполняя блок кода, который следует каждый раз с другим значением `rule`. Например:
+
+```C
+YR_RULE* rule;
+
+/* rule - объект YR_RULE */
+
+yr_rules_foreach(rules, rule)
+{
+	.. do сделать что-нибудь с rule
+}
+```
+***
+void <a name="yr_rule_disable">**yr_rule_disable**</a>([`YR_RULE`](#YR_RULE)* rule)
+
+Добавлено в версии 3.7.0.
+
+Отключает указанное правило. Отключенные правила полностью игнорируются в процессе сканирования и не вызывают совпадений. Если отключенное правило используется в для определения состояния какого-либо другого правила, значение для отключенного правила не определено (т. е. не является ни истинным, ни ложным). Дополнительные сведения о неопределенных значениях см. в разделе [2.6 Неопределенные значения](#ch_2.6).
+***
+void **yr_rule_enable**([YR_RULE](#YR_RULE)* rule)
+
+Добавлено в версии 3.7.0.
+
+Включает указанное правило. После использования [`yr_rule_disable()`](#yr_rule_disable) правило можно заново включить с помощью этой функции.
+
+int **yr_scanner_create**(YR_RULES* rules, YR_SCANNER **scanner)
+
+Добавлено в версии 3.8.0.
+
+Создает новый сканер, который можно использовать для сканирования данных с помощью предоставленных правил. `scanner` должен быть указателем на `YR_SCANNER`, при этом функция установит указатель на вновь выделенный сканер. Возвращает один из следующих кодов ошибок:
+
+[ERROR_INSUFFICIENT_MEMORY](#ERROR_INSUFFICIENT_MEMORY)
+***
+void **yr_scanner_destroy**(YR_SCANNER *scanner)
+
+Добавлено в версии 3.8.0.
+
+Уничтожает сканер. После использования сканера он должен быть уничтожен с помощью этой функции.
+***
+void **yr_scanner_set_callback**(YR_SCANNER \*scanner, YR_CALLBACK_FUNC callback, void\* user_data)
+
+Добавлено в версии 3.8.0.
+
+Устанавливает функцию обратного вызова, которая будет вызываться для сообщения о любых совпадениях, найденных сканером.
+***
+void **yr_scanner_set_timeout**(YR_SCANNER* scanner, int timeout)
+
+Добавлено в версии 3.8.0.
+
+Устанавливает максимальное количество секунд, которое сканер будет тратить при любом вызове `yr_scanner_scan_xxx`.
+***
+void **yr_scanner_set_flags**(YR_SCANNER* scanner, int flags)
+
+Добавлено в версии 3.8.0.
+
+Устанавливает флаги, которые будут использоваться при любом вызове yr_scanner_scan_xxx.
+***
+int **yr_scanner_define_integer_variable**(YR_SCANNER* scanner, const char* identifier, int64_t value)
+
+Добавлено в версии 3.8.0.
+
+Определяет внешнюю целочисленную переменную.
+***
+int **yr_scanner_define_boolean_variable**(YR_SCANNER* scanner, const char* identifier, int value)
+
+Добавлено в версии 3.8.0.
+
+Определяет внешнюю переменную типа `boolean`.
+***
+int **yr_scanner_define_float_variable**(YR_SCANNER* scanner, const char* identifier, double value)
+
+Добавлено в версии 3.8.0.
+
+Определяет внешнюю переменную с плавающей точкой.
+***
+int **yr_scanner_define_string_variable**(YR_SCANNER* scanner, const char* identifier, const char* value)
+
+Добавлено в версии 3.8.0.
+
+Определяет внешнюю строковую переменную.
+***
+int **yr_scanner_scan_mem**(YR_SCANNER* scanner, const uint8_t* buffer, size_t buffer_size)
+
+Добавлено в версии 3.8.0.
+
+Сканирует область памяти. Возвращает один из следующих кодов ошибок:
+
+- [ERROR_SUCCESS](#ERROR_SUCCESS)
+- [ERROR_INSUFFICIENT_MEMORY](#ERROR_INSUFFICIENT_MEMORY)
+- [ERROR_TOO_MANY_SCAN_THREADS](#ERROR_TOO_MANY_SCAN_THREADS)
+- [ERROR_SCAN_TIMEOUT](#ERROR_SCAN_TIMEOUT)
+- [ERROR_CALLBACK_ERROR](#ERROR_CALLBACK_ERROR)
+- [ERROR_TOO_MANY_MATCHES](#ERROR_TOO_MANY_MATCHES)
+***
+int **yr_scanner_scan_file**(YR_SCANNER* scanner, const char* filename)
+
+Добавлено в версии 3.8.0.
+
+Сканирует файл. Возвращает один из следующих кодов ошибок:
+
+- [ERROR_SUCCESS](#ERROR_SUCCESS)
+- [ERROR_INSUFFICIENT_MEMORY](#ERROR_INSUFFICIENT_MEMORY)
+- [ERROR_TOO_MANY_SCAN_THREADS](#ERROR_TOO_MANY_SCAN_THREADS)
+- [ERROR_SCAN_TIMEOUT](#ERROR_SCAN_TIMEOUT)
+- [ERROR_CALLBACK_ERROR](#ERROR_CALLBACK_ERROR)
+- [ERROR_TOO_MANY_MATCHES](#ERROR_TOO_MANY_MATCHES)
+***
+int **yr_scanner_scan_fd**(YR_SCANNER* scanner, YR_FILE_DESCRIPTOR fd)
+
+Добавлено в версии 3.8.0.
+
+Сканирование файла по его дескриптору. В системах POSIX `YR_FILE_DESCRIPTOR` - это `int`, возвращаемый функцией `open()`. В Windows `YR_FILE_DESCRIPTOR` - это дескриптор, возвращаемый функцией `CreateFile()`. Возвращает один из следующих кодов ошибок:
+
+- [ERROR_SUCCESS](#ERROR_SUCCESS)
+- [ERROR_INSUFFICIENT_MEMORY](#ERROR_INSUFFICIENT_MEMORY)
+- [ERROR_TOO_MANY_SCAN_THREADS](#ERROR_TOO_MANY_SCAN_THREADS)
+- [ERROR_SCAN_TIMEOUT](#ERROR_SCAN_TIMEOUT)
+- [ERROR_CALLBACK_ERROR](#ERROR_CALLBACK_ERROR)
+- [ERROR_TOO_MANY_MATCHES](#ERROR_TOO_MANY_MATCHES)
+***
 
 <a name="ch_7.6.3">
 
