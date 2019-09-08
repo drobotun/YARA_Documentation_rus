@@ -4711,7 +4711,7 @@ yr_rules_foreach(rules, rule)
 }
 ```
 ***
-void <a name="yr_rule_disable">**yr_rule_disable**</a>([`YR_RULE`](#YR_RULE)* rule)
+void <a name="yr_rule_disable">**yr_rule_disable**</a>([YR_RULE](#YR_RULE)* rule)
 
 Добавлено в версии 3.7.0.
 
