@@ -1,4 +1,4 @@
-![](logo.png)
+![](https://i.imgur.com/eDxvmd1.png)
 
 **The pattern matching swiss knife for malware researchers (and everyone else)**
 ***
