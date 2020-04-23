@@ -4,8 +4,8 @@
    contain the root `toctree` directive.
 
 .. figure:: _static/logo.png
-       :figwidth: 200 %
-       :align: left
+       :figwidth: 100 %
+       :align: center
 
 
 YARA Documentation
