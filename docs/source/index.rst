@@ -5,7 +5,7 @@
 
 .. figure:: _static/logo.png
        :figwidth: 100 %
-       :align: center
+       :align: left
 
 
 YARA Documentation
