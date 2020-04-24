@@ -17,6 +17,7 @@ Dec 19, 2018
 *****
 
 Документация к YARA (перевод на русский)
+========================================
 
 .. image:: https://zenodo.org/badge/197959828.svg
     :target: https://zenodo.org/badge/latestdoi/197959828
