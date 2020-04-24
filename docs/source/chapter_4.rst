@@ -124,7 +124,7 @@
 
 Файл ``module_list`` выглядит следующим образом:
 
-.. code-block::
+::
 
 	MODULE(tests)
 	MODULE(pe)
@@ -135,7 +135,7 @@
 
 Второй шаг-изменение файла ``Makefile.am`` чтобы сообщить программе ``make``, что исходный код вашего модуля должен быть скомпилирован и связан с YARA. В самом начале файла ``libyara/Makefile.ам`` вы найдете следующее:
 
-.. code-block::
+::
 
 	MODULES = modules/tests.c
 	MODULES += modules/pe.c
@@ -166,7 +166,7 @@
 
 Теперь вы можете создать такое правило:
 
-.. code-block::
+::
 
 	import "demo"
 	rule HelloWorld
@@ -450,7 +450,7 @@
 
 Тогда дерево будет выглядеть так:
 
-.. code-block::
+::
 
 	YR_OBJECT(type=OBJECT_TYPE_STRUCT, name="mymodule")
 	!

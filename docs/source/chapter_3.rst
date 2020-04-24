@@ -10,7 +10,7 @@
 
 Модуль PE позволяет создавать более детализированные правила для PE-файлов с помощью атрибутов и функций формата PE-файла (детальную информацию о формате PE-файлов можно получить `здесь <https://docs.microsoft.com/ru-ru/windows/win32/debug/pe-format>`_. Этот модуль предоставляет большинство полей, присутствующих в заголовке PE и предоставляет функции, которые могут быть использованы для написания более выразительных и целевых правил. Рассмотрим несколько примеров:
 
-.. code-block::
+::
 
 	import "pe"
 	rule single_section
@@ -545,7 +545,7 @@ http://msdn.microsoft.com/en-us/library/windows/desktop/ms646987(v=vs.85).aspx
 
 Вот несколько примеров:
 
-.. code-block::
+::
 
 	"/C=US/ST=Washington/L=Redmond/O=Microsoft Corporation/CN=Microsoft Code Signing PCA"
 	"/C=US/O=VeriSign, Inc./OU=VeriSign Trust Network/OU=Terms of use at https://www.verisign.com/rpa
@@ -559,7 +559,7 @@ http://msdn.microsoft.com/en-us/library/windows/desktop/ms646987(v=vs.85).aspx
 
 Например:
 
-.. code-block::
+::
 
 	"52:00:e5:aa:25:56:fc:1a:86:ed:96:c9:d4:4b:33:c7"
 
@@ -569,13 +569,13 @@ http://msdn.microsoft.com/en-us/library/windows/desktop/ms646987(v=vs.85).aspx
 
 Например, выражение:
 
-.. code-block::
+::
 
 	pe.signatures[n].valid_on(timestamp)
 
 эквивалентно следующему выражению:
 
-.. code-block::
+::
 
 	timestamp >= pe.signatures[n].not_before and timestamp <= pe.signatures[n].not_after
 	
@@ -775,7 +775,7 @@ http://msdn.microsoft.com/en-us/library/windows/desktop/ms646987(v=vs.85).aspx
 
 Модуль ELF очень похож на модуль PE, но предназначен для анализа файлов типа ELF. Этот модуль предоставляет большинство полей, присутствующих в заголовке ELF-файлов. Рассмотрим несколько примеров:
 
-.. code-block::
+::
 
 	import "elf"
 	rule single_section
@@ -1023,7 +1023,7 @@ http://msdn.microsoft.com/en-us/library/windows/desktop/ms646987(v=vs.85).aspx
 
 Предположим, что вы заинтересованы в том, чтобы исполняемые файлы отправляли HTTP-запросы на ``http://someone.doingevil.com``. В предыдущих версиях YARA вам приходилось довольствоваться только этим:
 
-.. code-block::
+::
 
 	rule evil_doer
 	{
@@ -1037,7 +1037,7 @@ http://msdn.microsoft.com/en-us/library/windows/desktop/ms646987(v=vs.85).aspx
 
 Но теперь с модулем ``Cuckoo`` вы можете взять отчет о поведении, сгенерированный для исполняемого файла вашей песочницей ``Cuckoo``, передать его вместе с исполняемым файлом в YARA и написать правило, подобное этому:
 
-.. code-block::
+::
 
 	import "cuckoo"
 	rule evil_doer
@@ -1048,7 +1048,7 @@ http://msdn.microsoft.com/en-us/library/windows/desktop/ms646987(v=vs.85).aspx
 
 Конечно, вы можете смешать ваши связанные с поведением условия с обычными условиями на основе строк:
 
-.. code-block::
+::
 
 	import "cuckoo"
 	rule evil_doer
@@ -1062,7 +1062,7 @@ http://msdn.microsoft.com/en-us/library/windows/desktop/ms646987(v=vs.85).aspx
 
 Но как мы можем передать информацию о поведении модулю ``Cuckoo``? В случае использования командной строки необходимо использовать опцию ``-x`` следующим образом:
 
-.. code-block::
+::
 
 	$yara -x cuckoo=behavior_report_file rules_file pe_file
 
@@ -1070,7 +1070,7 @@ http://msdn.microsoft.com/en-us/library/windows/desktop/ms646987(v=vs.85).aspx
 
 Если вы используете ``yara-python``, вы должны передать отчет о поведении в аргументе ``modules_data`` для метода ``match``:
 
-.. code-block::
+::
 
 	import yara
 	rules = yara.compile('./rules_file')
@@ -1134,14 +1134,14 @@ http://msdn.microsoft.com/en-us/library/windows/desktop/ms646987(v=vs.85).aspx
 
 В этом модуле есть две функции: ``type ()`` и ``mime_type ()``. Первая возвращает описательную строку, возвращаемую командой ``file``, например, если вы запустите ``file`` для какого-либо документа PDF, вы получите что-то вроде этого:
 
-.. code-block::
+::
 
 	$file some.pdf
 	some.pdf: PDF document, version 1.5
 
 Функция ``type ()`` в этом случае возвращает ``"PDF document, version 1.5"``. Использование функции ``mime_type ()`` аналогично передаче аргумента ``--mime`` для команды ``file``:
 
-.. code-block::
+::
 
 	$file --mime some.pdf
 	some.pdf: application/pdf; charset=binary
@@ -1246,13 +1246,13 @@ Example: ``hash.md5(“dummy”) == "275876e34cf609db118f3d84b799a790"``
 
 .. note:: Где отмечено, функции модуля возвращают числа с плавающей запятой. YARA может преобразовывать целые числа в числа с плавающей запятой во время большинства операций. Пример, приведенный ниже автоматически преобразует ``7`` в ``7.0``, потому что тип возвращаемой функции энтропии - значение с плавающей запятой:
 
-.. code-block::
+::
 
 	math.entropy(0, filesize) >= 7
 
 Единственным исключением является случай, когда функции требуется число с плавающей запятой в качестве аргумента. Например, такая запись приведет к синтаксической ошибке, поскольку аргументы должны быть числами с плавающей запятой:
 
-.. code-block::
+::
 
 	math.in_range(2, 1, 3)
 
@@ -1361,7 +1361,7 @@ Example: ``hash.md5(“dummy”) == "275876e34cf609db118f3d84b799a790"``
 
 Модуль ``dotnet`` позволяет создавать более детализированные правила для файлов .NET с помощью атрибутов и функций формата файлов .NET. Например:
 
-.. code-block::
+::
 
 	import "dotnet"
 	rule not_exactly_five_streams
