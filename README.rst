@@ -4,8 +4,8 @@
 
 *****
 
-YARA Documentation, release 3.8.1 (перевод на русский)
-======================================================
+YARA Documentation, release 3.8.1 (`перевод на русский <https://yara-documentation-rus.readthedocs.io/>`_)
+==========================================================================================================
 
 .. image:: https://readthedocs.org/projects/yara-documentation-rus/badge/?version=latest
     :target: https://yara-documentation-rus.readthedocs.io/
