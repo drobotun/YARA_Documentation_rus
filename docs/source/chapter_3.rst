@@ -1171,7 +1171,7 @@ http://msdn.microsoft.com/en-us/library/windows/desktop/ms646987(v=vs.85).aspx
 Пример: ``magic.mime_type() == "application/pdf"``
 
 Модуль Hash
-'''''''''''
+"""""""""""
 
 Добавлено в версии 3.2.0.
 
